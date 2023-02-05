@@ -1,10 +1,17 @@
 body {
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+
+  margin: 0;
+  padding: 0;
+}
+
+div {
   margin-top: 3%;
-  margin-left: 5%;
+  margin-left: 2%;
   margin-bottom: 3%;
   align-items: center;
   justify-content: center;
-  font-family: Arial, sans-serif;
 }
 h1 {
   font-size: 2.5em;
@@ -27,6 +34,8 @@ table tr:first-child {
   font-weight: bold;
 }
 
+nav { margin: 0; padding: 0;} 
+body { margin: 0; padding: 0; }
 
 th, td {
   font-size: 1.5em;

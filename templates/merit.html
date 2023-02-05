@@ -4,53 +4,56 @@
 </head>
 
 <body>
-    <h1>Upload a PDF</h1>
-    <p style="margin-right: 5%;">
-        The Merit Calculator is a tool for calculating merit from PDF transcripts. It accepts both Swedish and English
-        language
-        PDFs. The tool should only be used with normal transcript PDFs, as PDFs with grade distribution information may
-        cause
-        the tool to crash.
-    </p>
-    <form action="/" method="post" enctype="multipart/form-data">
-        <input type="file" name="pdf">
-        <input type="submit" value="Upload">
-        <br><br>
-        {% if error %}
-        <p style="color: red;">{{ error }}</p>
+    {% include 'navbar.html' %}
+
+    <div>
+        <h1>Upload a PDF</h1>
+        <p style="margin-right: 5%;">
+            The Merit Calculator is a tool for calculating merit from PDF transcripts. It accepts both Swedish and
+            English
+            language
+            PDFs. The tool should only be used with normal transcript PDFs, as PDFs with grade distribution information
+            may
+            cause
+            the tool to crash.
+        </p>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <input type="file" name="pdf">
+            <input type="submit" value="Upload">
+            <br><br>
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
+        </form>
+        {% if merit %}
+        <label for="international_reception">International Reception:</label>
+        <input type="checkbox" name="international_reception" id="international_reception" value="0.2">
+        <h2 id="merit">Merit: {{ merit }}</h2>
+        {% else %}
+        <h2 id="merit">Merit: Not Calculated</h2>
         {% endif %}
-    </form>
-    {% if merit %}
-    <label for="international_reception">International Reception:</label>
-    <input type="checkbox" name="international_reception" id="international_reception" value="0.2">
-    <h2 id="merit">Merit: {{ merit }}</h2>
-    {% else %}
-    <h2 id="merit">Merit: Not Calculated</h2>
-    {% endif %}
-    <p style="margin-right: 5%; font-size: 0.9em;">
-        Note: This website does not save or collect information about the PDFs you upload. The PDFs are only used to
-        calculate your merit. The merit is not saved anywhere.
-    </p>
+        <p style="margin-right: 5%; font-size: 0.9em;">
+            Note: This website does not save or collect information about the PDFs you upload. The PDFs are only used to
+            calculate your merit. The merit is not saved anywhere.
+        </p>
 
-    <button style="padding: 5px; font-size: 1em; " onclick="window.location.href='{{ url_for('index') }}'">Back to SSSB
-        Data</button>
 
-    <script>
-        const checkbox = document.querySelector('#international_reception');
-        const meritElement = document.querySelector('#merit');
+        <script>
+            const checkbox = document.querySelector('#international_reception');
+            const meritElement = document.querySelector('#merit');
 
-        if (checkbox) {
-            checkbox.addEventListener('change', (event) => {
-                const checked = event.target.checked;
-                const merit = parseFloat(meritElement.textContent.split(': ')[1]) || 0;
-                // newMerit round to 3 decimal places
-                //const newMerit = checked ? merit + 0.2 : merit - 0.2;
-                const newMerit = checked ? (Math.round((merit + 0.2) * 1000) / 1000).toFixed(3) : (Math.round((merit - 0.2) * 1000) / 1000).toFixed(3);
-                meritElement.textContent = `Merit: ${newMerit}`;
-            });
-        }
-    </script>
-
+            if (checkbox) {
+                checkbox.addEventListener('change', (event) => {
+                    const checked = event.target.checked;
+                    const merit = parseFloat(meritElement.textContent.split(': ')[1]) || 0;
+                    // newMerit round to 3 decimal places
+                    //const newMerit = checked ? merit + 0.2 : merit - 0.2;
+                    const newMerit = checked ? (Math.round((merit + 0.2) * 1000) / 1000).toFixed(3) : (Math.round((merit - 0.2) * 1000) / 1000).toFixed(3);
+                    meritElement.textContent = `Merit: ${newMerit}`;
+                });
+            }
+        </script>
+    </div>
 
 
 </body>
