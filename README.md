@@ -18,13 +18,15 @@ Clone the repository and install the dependencies by running the following comma
 
 
 ```
-pip install -r requirements.txt
+$ git clone https://github.com/koderik/SSSB-Data
+$ cd SSSB-Data
+$ pip install -r requirements.txt
 ```
 Running the Tool
 To run the tool, execute the following command in your terminal:
 
 ```
-python3 app.py
+$ python3 app.py
 ```
 The website will be available at http://localhost:5000.
 
@@ -33,7 +35,7 @@ The website will be available at http://localhost:5000.
 * You'll need to set up the PostgreSQL database and configure the database settings in the code.
 * You might need to set ```force_https=False``` in ```app.py``` to run locally
 ## Visit the Website
-The website is available online at http://SSSB.tech.
+The website is available online at https://SSSB.tech.
 
 ## Conclusion
 With this tool, you can easily scrape the maximum queue days data for all apartments on the SSSB.se website and display it in a user-friendly format. The tool also provides a way to calculate your grade point average, making it a versatile tool for personal use.
