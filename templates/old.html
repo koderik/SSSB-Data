@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SSSB Data</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <h1>
+        SSSB Queue Data (Previous)
+    </h1>
+    <p>
+        This page shows previous listings and their final queue standings.
+    </p>
+    <p>
+        The idea of this webpage is to show historical queue data for SSSB. Review previous "max" queue days and see how
+        the queue has changed over time.
+    </p>
+
+    <button onclick="window.location.href='{{ url_for('index') }}'">Current Queue</button>
+    <button onclick="window.location.href='{{ url_for('merit') }}'">Calculate your merit</button>
+    <table id="csv-table"></table>
+
+    <script>
+        var rows = '{{ rows }}';
+    </script>
+    <script src={{ url_for('static', filename='script.js' ) }}></script>
+
+    <p>Website made by <a href="https://github.com/koderik/">Koderik</a></p>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+body {
+  margin-top: 3%;
+  margin-left: 5%;
+  margin-bottom: 3%;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+}
+h1 {
+  font-size: 2.5em;
+}
+p {
+  font-size: 1.5em;
+}
+
+
+tr:nth-child(odd) {background-color: #dbe7f6;} 
+table tr td:first-child {
+  word-wrap: break-word;
+  text-align: left;
+}
+table tr td:not(:first-child) {
+  text-align: left;
+}
+/* first row sticks while scrolling */
+table tr:first-child {
+  font-weight: bold;
+}
+
+
+th, td {
+  font-size: 1.5em;
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #f2f2f2;
+}
+
+
+/* Add paddign for button and make it a little bigger */
+button {
+  padding: 10px;
+  margin-bottom: 1%;
+  font-size: 1.5em;
+}
