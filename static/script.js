@@ -59,8 +59,49 @@ window.onload = function () {
                 day.innerHTML = rows[i][1][j];
             }
         }
+        drawColor();
 
     }
+    function search() {
+        let searchTerm = document.getElementById("searchInput").value.toLowerCase();
+        let table = document.getElementById("csv-table");
+        let rows = table.getElementsByTagName("tr");
+
+        // Loop through all table rows
+        for (let i = 1; i < rows.length; i++) {
+            let address = rows[i].getElementsByTagName("td")[0];
+            let addressText = address.innerHTML.toLowerCase();
+
+            if (addressText.indexOf(searchTerm) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+        drawColor();
+    }
+    function drawColor() {
+
+       // of all visible rows, color every other row dbe7f6
+        let table = document.getElementById("csv-table");
+        let rows = table.getElementsByTagName("tr");
+        // color the first row #dbe7f6
+        rows[0].style.backgroundColor = "#dbe7f6";
+        visiblerows = [];
+        for (let i = 1; i < rows.length; i++) {
+            if (rows[i].style.display == "") {
+                visiblerows.push(rows[i]);
+            }
+        }
+        for (let i = 0; i < visiblerows.length; i++) {
+            if (i % 2 == 0) {
+                visiblerows[i].style.backgroundColor = "";
+            } else {
+                visiblerows[i].style.backgroundColor = "#dbe7f6";
+            }
+        }
+    }
+    document.getElementById("searchInput").addEventListener("input", search);
     // Update the table every 10 minutes
     setInterval(updateTable, 600000);
     // Update the table when the page loads

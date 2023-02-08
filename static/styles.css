@@ -21,7 +21,7 @@ p {
 }
 
 
-tr:nth-child(odd) {background-color: #dbe7f6;} 
+
 table tr td:first-child {
   word-wrap: break-word;
   text-align: left;
