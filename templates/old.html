@@ -3,35 +3,120 @@
 
 <head>
     <title>SSSB Data</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
-    {% include 'navbar.html' %}
-    <div>
-        <h1>
-            Previous Listings
-        </h1>
-        <p>
-            This page shows previous listings and their final queue standings.
-        </p>
-        <p>
-            The idea of this webpage is to show historical queue data for SSSB. Review previous "max" queue days and see
-            how
-            the queue has changed over time.
-        </p>
 
-        <label style="font-size: 1.5em" for="searchInput">Search:</label>
-        <input style="font-size: 1.5em; margin-bottom: 2%;" type="text" id="searchInput">
-        <table id="csv-table"></table>
 
-        <script>
-            var rows = '{{ rows }}';
-        </script>
-        <script src={{ url_for('static', filename='script.js' ) }}></script>
+    <nav
+        class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
+        <div class="container flex flex-wrap items-center justify-center mx-auto">
+            <a href="https://sssb.se/" class="flex items-center">
+                <img src="static/logo.png" class="h-6 mr-3 sm:h-9" alt="SSSB Logo">
+            </a>
+            <div class="flex md:order-2">
 
-        <p>Website made by <a href="https://github.com/koderik/">Koderik</a></p>
+            </div>
+            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+                <ul
+                    class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                    <li>
+                        <a href="{{ url_for('index') }}"
+                            class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Current</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('old') }}"
+                            class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                            aria-current="page">History</a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('merit') }}"
+                            class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Calculate
+                            Merit</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    // add padding to the top of the page for navbar
+    <div class="pt-16"></div>
+
+
+
+
+
+
+    <div class="flex flex-col items-center">
+
+
+
+
+
+
+        <div>
+
+            <div class="max-w-2xl">
+
+                <h1
+                    class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-blue-900 md:text-5xl lg:text-6xl dark:text-white-500">
+
+                    Old Listings
+                </h1>
+                <p class="mb-3 font-light text-gray-500 dark:text-gray-400">
+                    This page shows old queue data for the SSSB. The data is updated every time appartments go off the
+                    regular queue.
+                </p>
+                <p class="mb-3 font-light text-gray-500 dark:text-gray-400">
+                    The idea of this webpage is to show historical queue data for SSSB. Review previous "max" queue days
+                    and
+                    see
+                    how
+                    the queue has changed over time.
+                </p>
+            </div>
+
+            <div class="mb-6 w-1/2">
+
+                <label for="searchInput"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Search:</label>
+
+                <input type="text" id="searchInput"
+                    class="block w-full  p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+
+
+
+
+            {% include 'table.html' %}
+        </div>
+        <div class="w-full">
+            <footer
+                class="p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800">
+                <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"> Made by Koderik
+                </span>
+                <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
+                    <li>
+                        <a href="https://github.com/koderik" class="mr-4 hover:underline md:mr-6 ">GitHub</a>
+                    </li>
+                    <li>
+                        <a href="https://www.sandlov.com/" class="mr-4 hover:underline md:mr-6">Personal Site</a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/sandlov/" class="mr-4 hover:underline md:mr-6">LinkedIn</a>
+                    </li>
+
+                </ul>
+            </footer>
+        </div>
     </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.js"></script>
 </body>
 
 </html>

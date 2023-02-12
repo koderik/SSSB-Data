@@ -18,12 +18,20 @@ window.onload = function () {
         rows = JSON.parse(rows);
 
         var table = document.getElementById("csv-table");
+        //     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        table.className = "w-full text-sm text-left text-gray-500 dark:text-gray-400";
         // add row for headers Address nth, n-1th, n-2th, n-3th, n-4th, n-5th, n-6th, n-7th, n-8th, n-9th, n-10th
         var header = table.insertRow();
+        // add this css to header         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        header.className = "text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400";
         var address = header.insertCell(0);
+        // <th scope="col" class="px-6 py-3">
+        address.className = "px-6 py-3";
         address.innerHTML = "Address";
         // add Type column to header
         var type = header.insertCell(1);
+        // <th scope="col" class="px-6 py-3">
+        type.className = "px-6 py-3";
         type.innerHTML = "Type";
 
 
@@ -32,20 +40,37 @@ window.onload = function () {
         rows.forEach((row) => {
             max_day = Math.max(max_day, row[1].length);
         });
+
+        // set header to   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         for (var i = 0; i < max_day; i++) {
+            
             var day = header.insertCell(i + 2);
+            // <th scope="col" class="px-6 py-3">
+            day.className = "px-6 py-3";
+
             var ordinal = i + 1;
             day.innerHTML = ordinal + (ordinal > 3 ? "th" : ordinal === 1 ? "st" : ordinal === 2 ? "nd" : "rd");
         }
         rows.reverse()
+        //            <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700"> for body
+
         for (var i = 0; i < rows.length; i++) {
+            
             var row = table.insertRow();
             url = rows[i][2];
+           
+            //  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            row.className = "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 "
+       
             // add href link to url in address column
             var address = row.insertCell(0);
+            //                 <th scope="col" class="px-6 py-3">
+            address.className = "px-6 py-3";
             address.innerHTML = '<a href="' + url + '">' + rows[i][0] + '</a>';
             // add column for type
             var type = row.insertCell(1);
+            //                 <th scope="col" class="px-6 py-3">
+            type.className = "px-6 py-3";
             var type_data = rows[i][3];
             // short_type = Korr if type_data contains  Korridor, else take the integer of the string and P if Pentry or K if Kök ex. 3P, 2K. Disregard case
             var short_type = type_data.includes("korridor") ? "Korr" : type_data.includes("pentry") ? type_data.substring(0, 1) +" & "+ "P" : type_data.substring(0, 1)+" & " + "K";
@@ -56,7 +81,16 @@ window.onload = function () {
             rows[i][1] = rows[i][1].reverse();
             for (var j = 0; j < rows[i][1].length; j++) {
                 var day = row.insertCell(j + 2);
+                //                 <th scope="col" class="px-6 py-3">
+                day.className = "px-6 py-3";
                 day.innerHTML = rows[i][1][j];
+            }
+            // fill in empty cells
+            for (var j = rows[i][1].length; j < max_day; j++) {
+                var day = row.insertCell(j + 2);
+                //                 <th scope="col" class="px-6 py-3">
+                day.className = "px-6 py-3";
+                day.innerHTML = "";
             }
         }
         drawColor();
@@ -93,6 +127,7 @@ window.onload = function () {
                 visiblerows.push(rows[i]);
             }
         }
+        // draw whole row with color
         for (let i = 0; i < visiblerows.length; i++) {
             if (i % 2 == 0) {
                 visiblerows[i].style.backgroundColor = "";

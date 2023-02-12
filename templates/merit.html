@@ -1,60 +1,166 @@
 <head>
     <title>Merit Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
-    {% include 'navbar.html' %}
-
     <div>
-        <h1>Upload a PDF</h1>
-        <p style="margin-right: 5%;">
-            The Merit Calculator is a tool for calculating merit from PDF transcripts. It accepts both Swedish and
-            English
-            language
-            PDFs. The tool should only be used with normal transcript PDFs, as PDFs with grade distribution information
-            may
-            cause
-            the tool to crash.
-        </p>
-        <form action="/" method="post" enctype="multipart/form-data">
-            <input type="file" name="pdf">
-            <input type="submit" value="Upload">
-            <br><br>
-            {% if error %}
-            <p style="color: red;">{{ error }}</p>
-            {% endif %}
-        </form>
-        {% if merit %}
-        <label for="international_reception">International Reception:</label>
-        <input type="checkbox" name="international_reception" id="international_reception" value="0.2">
-        <h2 id="merit">Merit: {{ merit }}</h2>
-        {% else %}
-        <h2 id="merit">Merit: Not Calculated</h2>
-        {% endif %}
-        <p style="margin-right: 5%; font-size: 0.9em;">
-            Note: This website does not save or collect information about the PDFs you upload. The PDFs are only used to
-            calculate your merit. The merit is not saved anywhere.
-        </p>
+        <nav
+            class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
+            <div class="container flex flex-wrap items-center justify-center mx-auto">
+                <a href="https://sssb.se/" class="flex items-center">
+                    <img src="static/logo.png" class="h-6 mr-3 sm:h-9" alt="SSSB Logo">
+                </a>
+                <div class="flex md:order-2">
+
+                </div>
+                <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+                    <ul
+                        class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                        <li>
+                            <a href="{{ url_for('index') }}"
+                                class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Current</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('old') }}"
+                                class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                                History</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('merit') }}"
+                                class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                                aria-current="page">Calculate Merit</a>
+                        </li>
 
 
-        <script>
-            const checkbox = document.querySelector('#international_reception');
-            const meritElement = document.querySelector('#merit');
 
-            if (checkbox) {
-                checkbox.addEventListener('change', (event) => {
-                    const checked = event.target.checked;
-                    const merit = parseFloat(meritElement.textContent.split(': ')[1]) || 0;
-                    // newMerit round to 3 decimal places
-                    //const newMerit = checked ? merit + 0.2 : merit - 0.2;
-                    const newMerit = checked ? (Math.round((merit + 0.2) * 1000) / 1000).toFixed(3) : (Math.round((merit - 0.2) * 1000) / 1000).toFixed(3);
-                    meritElement.textContent = `Merit: ${newMerit}`;
-                });
-            }
-        </script>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     </div>
+    <div class="mb-auto h-screen">
+        // add padding for the navbar
+        <div style="padding-top: 4rem;"></div>
 
+
+        <div class="flex flex-col items-center">
+
+
+            <div>
+
+                <div class="max-w-2xl mx-auto">
+
+                    <h1
+                        class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-blue-900 md:text-5xl lg:text-6xl dark:text-white-500">
+
+                        Calculate your merit</h1>
+                    <p class="mb-3 font-light text-gray-500 dark:text-gray-400">
+                        The Merit Calculator is a tool for calculating merit from PDF transcripts. It accepts both
+                        Swedish
+                        and English language PDFs. </p>
+                    <p class="mb-3 font-light text-gray-500 dark:text-gray-400">
+                        The tool should only be used with normal transcript PDFs, as PDFs with grade distribution
+                        information may cause the tool to crash.
+                    </p>
+                </div>
+
+                <div class="max-w-2xl  mx-auto">
+                    <form action="/" method="post" enctype="multipart/form-data">
+
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            for="pdf_input">Upload
+                            PDF</label>
+
+                        <input
+                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                            id="pdf_input" type="file" name="pdf" accept="application/pdf"
+                            onchange="this.form.submit()">
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">Only PDF files are allowed</p>
+
+
+                        {% if error %}
+                        <p class="text-red-500 text-xs" role="alert">{{ error }}</p>
+                        {% endif %}
+
+                    </form>
+
+
+                    {% if merit %}
+                    <div class="max-w-2xl mx-auto">
+                        <div class="flex flex-rows items-center ">
+
+
+                            <h2 class="text-4xl font-extrabold dark:text-white" id="merit">Merit: {{ merit }}</h2>
+
+                            <div style="padding-left: 2rem;"></div>
+                            <div>
+                                <label class="inline-block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    for="international_reception">International Reception:</label>
+                                <input
+                                    class="form-checkbox text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    id="international_reception" type="checkbox" name="international_reception"
+                                    value="0.2">
+                            </div>
+                        </div>
+                        {% else %}
+                        <h2 class="text-4xl font-extrabold dark:text-white" id="merit">Merit: Not Calculated</h2>
+                        {% endif %}
+
+
+                        <p class="mb-3 w-3/4 font-light text-gray-500 dark:text-gray-400"">
+                    Note: This website does not save or collect information about the PDFs you upload. The PDFs are only
+                    used to
+                    calculate your merit. The merit is not saved anywhere.
+                </p>
+            </div>
+
+
+           
+            </div>
+          
+       
+            </div>
+<script>
+    const checkbox = document.querySelector('#international_reception');
+    const meritElement = document.querySelector('#merit');
+    if (checkbox) {
+        checkbox.addEventListener('change', (event) => {
+            const checked = event.target.checked;
+            const merit = parseFloat(meritElement.textContent.split(': ')[1]) || 0;
+            // newMerit round to 3 decimal places
+            //const newMerit = checked ? merit + 0.2 : merit - 0.2;
+            const newMerit = checked ? (Math.round((merit + 0.2) * 1000) / 1000).toFixed(3) : (Math.round((merit - 0.2) * 1000) / 1000).toFixed(3);
+            meritElement.textContent = `Merit: ${newMerit}`;
+        });
+    }
+</script>
+        </div>
+    </div>
+    </div>
+<div>
+
+    <footer class=" p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800">
+                            <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"> Made by Koderik
+                            </span>
+                        <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
+                            <li>
+                                <a href="https://github.com/koderik" class="mr-4 hover:underline md:mr-6 ">GitHub</a>
+                            </li>
+                            <li>
+                                <a href="https://www.sandlov.com/" class="mr-4 hover:underline md:mr-6">Personal
+                                    Site</a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/in/sandlov/"
+                                    class="mr-4 hover:underline md:mr-6">LinkedIn</a>
+                            </li>
+
+                        </ul>
+                        </footer>
+                    </div>
 
 </body>
 
