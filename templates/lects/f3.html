@@ -1,0 +1,318 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 3: Abstrakta datatyper</h1>
+
+
+        <div class="paragraphs">
+            <h2>Abstrakta datatyper</h2>
+            <ul>
+                <li>Abstraktion</li>
+                <li>Gränssnitt (Interface)</li>
+                <li>Abstrakta datatyper
+                    <ul>
+                        <li>Kö (Queue)</li>
+                        <li>Stack</li>
+                        <li>Deque</li>
+                    </ul>
+                </li>
+                <li>Länkade listor
+                    <ul>
+                        <li>Stackimplementation</li>
+                    </ul>
+                </li>
+            </ul>
+            <hr>
+            <h4>Abstraktion</h4>
+            <p>Abstraktion innebär att dölja detaljer. En användare behöver inte känna till detaljer för att kunna
+                utnyttja en datastruktur eller algoritm och en konstruktör behöver inte veta var informationen kommer
+                ifrån eller vad resultaten ska utnyttjas till.</p>
+            <p>Exempel:</p>
+            <p><a href="https://pyspotify.mopidy.com/en/latest/api/album/" class="external" target="_blank"
+                    rel="noreferrer noopener"><span>pyspotify Album</span><span class="external_link_icon"
+                        style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                            viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                            <path
+                                d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                        </svg>
+                        <span class="screenreader-only">Links to an external site.</span></span></a></p>
+            <p><a href="https://developers.google.com/maps/documentation/javascript/3.exp/reference" class="external"
+                    target="_blank" rel="noreferrer noopener"><span>Google Maps API</span><span
+                        class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                        role="presentation"><svg viewBox="0 0 1920 1920" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                            <path
+                                d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                        </svg>
+                        <span class="screenreader-only">Links to an external site.</span></span></a></p>
+            <p>Man behöver inte veta exakt hur data lagras för att använda operationerna.</p>
+            <p>Likadant i Python - vi vet inte hur strängar, listor och uppslagslistor är definierade, ändå kan vi
+                använda dom. Det här är ett exempel på abstraktion. Om implementationen av listans metoder ändras (i en
+                ny Python-version) behöver vi inte bekymra oss, alla våra program som använder listor fungerar ändå. Vi
+                använder listan som en abstrakt datastruktur.</p>
+            <p>Några fördelar med abstraktion:</p>
+            <ul>
+                <li>Användaren och konstruktören kommer överens om vad som ska kunna göras och vilka data som ska
+                    utnyttjas (d v s ett gränssnitt).</li>
+                <li>Sedan kan konstruktören ägna sig åt detta problem och användaren fortsätta som om det var löst (och
+                    utnyttja gränssnittet i sin del av programmet).</li>
+                <li>Användaren kan inte missbruka detaljinformation (utan måste hålla sig till gränssnittet).</li>
+                <li>Konstruktören kan förbättra konstruktionen utan att användarens kod behöver ändras.</li>
+            </ul>
+            <p>Dessutom:</p>
+            <ul>
+                <li>Det är lättare att överblicka program om delproblem är lösta separat.</li>
+                <li>Konstruktören kan anpassa den abstrakta datatypen/algoritmen till olika användare utan att förstöra
+                    en bra konstruktion.</li>
+            </ul>
+            <hr>
+            <h4>Gränssnitt (Interface)</h4>
+            <p>Begreppet <em>gränssnitt</em> används i många sammanhang, men det handlar alltid om någon form av
+                "kontakt" eller "kommunikation". Man talar tex om gränssnittet mellan olja och vatten som skiktat sig i
+                en behållare och om grafiska användargränssnitt som underlättar kommunikationen mellan användare och
+                datorprogram. <br>Här gäller det gränssnitt inuti program; hur en viss del av koden kommunicerar med
+                resten av programmet.</p>
+            <hr>
+            <h4>Abstrakta datatyper</h4>
+            <p>Heltal, flyttal, textsträngar och vektorer är datorns datatyper. Verklighetens datatyper är många fler,
+                till exempel pengar, temperaturer och datum. Det är frestande att låta <strong>pengar</strong>
+                representeras av heltal, <strong>temperaturer</strong> av flyttal (grader Celsius) och
+                <strong>datum</strong> av textsträngar ("2016-08-31"), alltså av <em>konkreta datatyper</em>, men det är
+                inte så bra. Datorn kan inte lagra hur stora heltal som helst, så när man kommer upp i stora belopp
+                beter sig inte programmet som man tänkt sig. Temperatur anges i Fahrenheit i USA, så där räknar
+                programmet fel. Och misstaget att ha datum som konkret datatyp kostade hundratals miljarder i
+                omprogrammering vid tusenårsskiftet.</p>
+            <p>En <em><strong>abstrakt datatyp:</strong></em></p>
+            <ul>
+                <li>Anger inte lagringssättet</li>
+                <li>Specificerar operationer för åtkomst och ändring</li>
+            </ul>
+            <p>Så här skulle exemplen se ut med abstrakta datatyper.</p>
+            <p>&nbsp;</p>
+            <pre>   saldo = kronor()    # Ett objekt av den abstrakta datatypen kronor
+   saldo.set(2000)     # Sätter nytt värde 
+   saldo.plus(1500)    # Ändrar värdet
+   print(saldo.get())  # Åtkomst av värdet
+   - - -
+   T = temperatur()    # Ett objekt av den abstrakta datatypen temperatur
+   T.setC(11.5)        # Sätter nytt värde i grader Celsius 
+   print(T.getF())     # Åtkomst i grader Fahrenheit
+   - - -
+   d = datum()         # Ett objekt av den abstrakta datatypen datum
+   d.set(2016,09,03)   # Sätter ett värde
+   if d.helgdag():     # Användbara anrop finns 
+</pre>
+            <p>Specifikationen av vilka anrop som finns kallas datatypens gränssnitt och är det enda användaren behöver
+                känna till. Hur data representeras konkret och hur metoderna implementerats behöver användaren inte
+                veta. Om implementationen ändras påverkar det inte gränssnittet, så ingen användarkod behöver ändras.
+            </p>
+            <hr>
+            <h4>Abstrakt kö</h4>
+            <p>En kö fungerar som man förväntar sig, dvs det man stoppar in först är det som tas ut först.<br>För en
+                abstrakt kö finns följande operationer:</p>
+            <ul>
+                <li>enqueue(x): Stoppa in x sist i kön.</li>
+                <li>x = dequeue(): Plocka ut och returnera det som står först i kön.</li>
+                <li>isEmpty(): Undersök om kön är tom.</li>
+            </ul>
+            <p>I labb 2 ska ni använda en kö för att förbereda en kortkonst. En kö kan t ex användas för att hantera
+                skrivarköer (se <a class="inline_disabled external"
+                    href="https://runestone.academy/ns/books/published//pythonds/BasicDS/SimulationPrintingTasks.html"
+                    target="_blank" rel="noreferrer noopener"><span>exempel </span><span class="external_link_icon"
+                        style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                            viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                            <path
+                                d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                        </svg>
+                        <span class="screenreader-only">Links to an external site.</span></span></a>i Miller-Ranum). Den
+                som först begärde utskrift ska också få ut sin utskrift först.</p>
+            <hr>
+            <h4>Abstrakt stack</h4>
+            <p>En stack fungerar som en trave tallrikar - det man lägger överst på stacken är det som kommer att tas
+                bort först.</p>
+            <p>För en abstrakt stack finns följande operationer:</p>
+            <ul>
+                <li>push(x): Lägg x överst på stacken.</li>
+                <li>x = pop(): Plocka ut och returnera det som ligger överst.</li>
+                <li>isEmpty(): Undersök om stacken är tom.</li>
+            </ul>
+            <hr>
+            <h4>Abstrakt deque</h4>
+            <p>Deque (double-ended queue)</p>
+            För en abstrakt deque finns följande operationer:
+        </div>
+        <ul>
+            <li><span>addFront(x): Lägg in x först.&nbsp;</span></li>
+            <li><span>addRear(x): Lägg in x sist.&nbsp;</span></li>
+            <li><span>x = removeFront(): Plocka ut och returnera det som ligger först.&nbsp;</span></li>
+            <li><span>x = removeRear():</span><span>&nbsp;</span><span>Plocka ut och returnera det som ligger
+                    sist.&nbsp;</span></li>
+            <li><span>isEmpty():&nbsp;</span><span>Undersök om dequen är tom.</span></li>
+        </ul>
+        <hr>
+        <h3>Ett tentatal</h3>
+        <p>När influensavaccinet anländer till vårdcentralen bildas en lång kö utanför av folk som vill bli vaccinerade.
+        </p>
+        <p>Syster Maud inser att vaccinet inte kommer att räcka till alla och ser att många i början av kön är unga och
+            friska. Hon tror att dom som är i minst behov av vaccination hamnat först (dom sprang snabbast).<br>Hon vill
+            se till att personer som är 65 eller äldre vaccineras först. Hur ska hon göra?</p>
+        <p>Skriv programmet <strong>MaudVaccinerar.py</strong> som läser filen <em>patienter.txt</em> av typen</p>
+        <pre>  Usain 29
+  Annegret 65
+  Stanislawa 104
+  Frankie 47
+  Inge 74
+</pre>
+        <p>och skriver ut alla under 65 först.</p>
+        <p>Yngre måste tillfälligt läggas i ett förvaringsutrymme medan filen läses igenom, till exempel i en stack. Man
+            lägger ett objekt på stacken med anropet <strong>push(p)</strong> och man hämtar ett objekt från stacken med
+            <strong>p = pop()</strong>.</p>
+        <h3>Algoritm</h3>
+        <ol>
+            <li>Skapa en tom stack</li>
+            <li>Öppna filen</li>
+            <li>För varje patient i filen:
+                <ul>
+                    <li>Om patienten är yngre än 65:
+                        <ul>
+                            <li>Pusha hen på stacken</li>
+                        </ul>
+                    </li>
+                    <li>annars:
+                        <ul>
+                            <li>Vaccinera</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>Nu är filen genomläst. Så länge stacken inte är tom:
+                <ul>
+                    <li>Poppa ett element ur stacken</li>
+                    <li>Vaccinera</li>
+                </ul>
+            </li>
+        </ol>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <pre>from stack import Stack
+
+class Patient:
+
+   def __init__(self, namn, ålder):
+      self.namn = namn
+      self.ålder = int(ålder)
+
+   def __str__(self):
+      return self.namn + " " + str(self.ålder) + " år"
+
+def main():
+   korridor = Stack()
+   with open("patienter.txt", encoding = "utf8") as register:
+      for rad in register:
+         lista = rad.split()
+         namn = lista[0]
+         ålder = lista[1]
+         p = Patient(namn, ålder)
+         if p.ålder &lt; 65:
+            korridor.push(p)            
+         else: 
+            print("Vaccinerar:", p)<br>      
+   print("Om vi hinner tar vi också: ")
+   while not korridor.isEmpty():       
+      p = korridor.pop()             
+      print("\t", p)
+
+main()
+</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Här har vi programmerat abstrakt, som om push och pop vore fungerande metoder. Stackimplementationen kommer
+            lite senare!</p>
+        <p>I vilken ordning kommer personerna ut?</p>
+        <hr>
+        <h4>Länkade listor</h4>
+        <p>En länkad lista består av ett antal objekt, <em>noder</em> som är sammanlänkade genom att varje nod refererar
+            till nästa nod. Dessa referenser kallas ofta <em>next-pekare</em>.</p>
+        <p>Här är klassen Node:</p>
+        <pre>class Node:
+    def __init__(self, x, next = None):
+        self.data = x    # Kan referera till värde av valfri typ
+        self.next = next  
+</pre>
+        <p>När en nod skapas med n = Node(rad) har n.next värdet None, dvs pekar inte på någonting.</p>
+        <p>Vad innebär följande?</p>
+        <pre>* p.data<br>* p.next<br>* p = None<br>* p = p.next</pre>
+        <hr>
+        <p>Vi skapar en Stack-klass. Både Stack-klass och Nod-klass kan ligga i filen stack.py</p>
+        <p>För en stack behövs bara en referens <strong>top</strong> till den översta noden, sedan kommer man åt övriga
+            noder genom att följa <strong>next</strong>-pekarna.</p>
+        <pre>class Stack:
+
+   def __init__(self):
+      self.top = None
+
+   def push(self,x):
+      """Lägger x överst på stacken """
+      ny = Node(x)
+      ny.next = self.top
+      self.top = ny
+
+   def pop(self):
+      """Plockar ut och returnerar det översta elementet """
+      x = self.top.data
+      self.top = self.top.next
+      return x
+
+   def isEmpty(self):
+      """Returnerar True om stacken är tom, False annars"""
+      if self.top == None: 
+         return True
+      else: 
+         return False
+
+class Node:
+
+   def __init__(self, x, next = None):
+      self.data = x
+      self.next = next
+</pre>
+        <hr>
+        <p>En <em>kö</em> kan implementeras likadant som en stack. Nu vill man ha en pekare i var ände på kön.</p>
+        <p>Den som hette <strong>top</strong> i stacken kallar vi <strong>first</strong> och så har vi <strong>last
+            </strong>som pekar på sista noden. Där ska nämligen nya noder stoppas in.</p>
+        <pre>class Queue:
+
+    def __init__(self): 
+       self.first = None
+       self.last = None
+
+    def enqueue(self,x):
+        """Stoppar in x sist i kön """
+        ny = Node(x)
+        if self.first == None:  # Om kön är tom blir det på ett sätt...
+          - - -                 # ...som du får tänka ut själv.
+        else:                   # Annars blir det på ett annat sätt..
+          - - -                 # ...som du också får lura ut själv.
+
+    def dequeue(self):
+        """Plockar ut och returnerar det som står först i kön """
+        - - -
+
+    def isEmpty(self):
+        """Returnerar True om kön är tom, False annars """
+        - - -
+</pre>
+        <hr>
+
+    </div>
+</div>

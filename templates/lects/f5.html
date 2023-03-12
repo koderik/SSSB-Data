@@ -1,0 +1,206 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 5: Binära träd</h1>
+
+
+        <table style="width: 412px;" border="1">
+            <tbody>
+                <tr>
+                    <td style="width: 148.4px;"><strong>Mål</strong></td>
+                    <td style="width: 245.2px;"><strong>Läs i kursboken<br></strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 148.4px;">
+                        <p>Träd</p>
+                    </td>
+                    <td style="width: 245.2px;">
+                        <p><a class="reference internal external"
+                                href="https://runestone.academy/runestone/books/published/pythonds/Trees/toctree.html"
+                                target="_blank"><span>7.1-7.5, 7.7, 7.11-7.15. Trees and Tree Algorithms</span></a></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Idag:</p>
+        <ul>
+            <li>Allmänna träd</li>
+            <li>Binära sökträd</li>
+            <li>Rekursiva tankar för binärträd</li>
+        </ul>
+        <hr>
+        <h3>Allmänna träd</h3>
+        <p><em>Stack</em> och <em>kö</em> är två viktiga datastrukturer man kan bygga av objekt, där varje objekt
+            refererar till <strong>ett</strong> annat objekt.</p>
+        <p><img src="http://www.csc.kth.se/utbildning/kth/kurser/2D1320/gemensam/bilder/orkester.gif" alt="TRÄD"
+                width="331" height="221"></p>
+        <p>Med <strong>två</strong> referenser i varje objekt kan man bygga träd, till exempel ett som beskriver en
+            symfoniorkesters sammansättning. <br>Här har objekten följande utseende.</p>
+        <pre>    class Node:
+       def __init__(self, value):
+          self.value = value
+          self.down = None
+          self.right = None
+</pre>
+        <p>All systematisk uppdelning kan beskrivas med liknande träd, till exempel ett bokverks uppdelning i delar,
+            kapitel, sektioner osv. Man kan också tänka sej det som ett släktträd och då kallas ofta
+            <em>down</em>-referensen för <em>firstChild</em> och <em>right</em>-referensen för <em>nextSibling</em>. Det
+            räcker med två referenser i varje nod, oavsett hur stora barnaskarorna är.</p>
+        <h3>Användningsområden</h3>
+        <p>Trädstrukturer är hierarkiska och sådana datastrukturer är mycket vanliga. Några exempel:</p>
+        <ul>
+            <li>Filsystemet använder träd (man kan ha underkataloger i underkataloger).</li>
+            <li>Databaser använder träd för att få snabb sökning.</li>
+            <li>Schackprogram använder träd för att gå igenom resultaten av möjliga drag.</li>
+            <li>Vid datakomprimering kan man använda träd för att få fram en optimal kod (Huffmanträd, kommer på
+                komprimeringsföreläsningen).</li>
+        </ul>
+        <hr>
+        <p><img src="http://www.csc.kth.se/utbildning/kth/kurser/2D1320/gemensam/bilder/bintree.gif" alt="BINÄRTRÄD"
+                width="196" height="251"></p>
+        <h3>Definitioner</h3>
+        <ul>
+            <li><strong>Noder</strong> är de objekt som trädet är uppbyggt av. De innehåller data och pekare.</li>
+            <li><strong>Rot</strong> är den översta noden i trädet. Den pekas inte ut av någon annan nod.</li>
+            <li><strong>Barn</strong> till en nod är de som pekas ut av noden.</li>
+            <li><strong>Förälder</strong> är noden ovanför i trädet.</li>
+            <li><strong>Syskon</strong> har samma förälder.</li>
+            <li><strong>Löv</strong> är en nod vars bägge pekare är None.</li>
+            <li><strong>Delträd</strong> definieras så här: En godtycklig nod i trädet kan ses som en rot, och den ,
+                tillsammans med alla noder under den (barn, barnbarn osv.) bildar ett delträd.</li>
+            <li><strong>Nivå</strong> är det antal steg från roten noden befinner sig. Roten är på nivå noll.</li>
+            <li><strong>Höjd</strong> är den maximala nivån som nån av trädets noder befinner sig på.</li>
+            <li><strong>Balanserat</strong> är binärträdet om skillnaden i höjd mellan höger och vänster delträd till
+                varje nod är noll eller ett.</li>
+            <li><strong>Fullt</strong> är binärträdet om alla noder utom löven har exakt två barn, och alla löv är på
+                samma nivå.</li>
+        </ul>
+        <hr>
+        <h3>Binärträd</h3>
+        <p>När man programmerar binärträd brukar man använda noder, som i en länkad lista, men med två pekare: en åt
+            vänster och en åt höger:</p>
+        <pre>    class Node:
+       def __init__(self, value):
+          self.value = value
+          self.left = None
+          self.right = None
+
+</pre>
+        <p>Man når trädet genom variabeln <em>root</em> som pekar på den översta noden (datalogiska träd har roten
+            uppåt). Rotnodens vänsterpekare pekar på ett mindre binärträd och högerpekaren på ett annat mindre
+            binärträd.</p>
+        <p>Antalet nivåer i trädet avgör hur många noder det kan innehålla. Ett fullt träd med <em>k</em> nivåer
+            innehåller 2<sup><em>k</em></sup> - 1 noder. Exempel: k=3 i vår bild ger högst 7 noder (det finns plats för
+            två till under 9999). Man kan också säga att ett balanserat träd med <em>n</em> noder har cirka log
+            <em>n</em> nivåer.</p>
+        <hr>
+        <h4>Binära sökträd</h4>
+        <p>I vårt exempelträd ligger små tal till vänster och stora tal till höger. När det är på det sättet har man ett
+            <em>binärt sökträd</em>, så kallat eftersom det går så snabbt att söka reda på en nod i trädet. Låt oss säga
+            att vi söker efter 666. Vår algoritm blir följande</p>
+        <ul>
+            <li>Kolla först rottalet.</li>
+            <li>Om talet är 666 har vi funnit vad vi söker.</li>
+            <li>Om talet är större än 666 letar vi vidare efter 666 i vänsterträdet.</li>
+            <li>Om det är mindre än 666 letar vi vidare i högerträdet.</li>
+            <li>...men om vi når en None-referens finns inte 666 i sökträdet.</li>
+        </ul>
+        <p>Algoritmer som går igenom varje nod i trädet (t ex utskrift) har tidskomplexitet O(n). Men sökningen tar bara
+            O(logn) om trädet är balanserat, därför att vi som mest går igenom trädets höjd.</p>
+        <pre>    def finns(p,value):
+        letar = True
+        while letar:
+            if p == None: 
+                return False
+            if value == p.value: 
+                return True
+            if value &lt; p.value: 
+                p = p.left
+            if value &gt; p.value: 
+                p = p.right
+</pre>
+        <hr>
+        <h3>Rekursivt listexempel</h3>
+        <p>Vi tänker oss en länkad lista av noder, där varje nod innehåller ett värde och en
+            <em>next</em>-pekare.<br><strong>Fråga:</strong> Hur många noder finns i listan? <br><strong>Rekursivt
+                svar:</strong> En nod mer än i listan under översta noden. <br><strong>Basfall:</strong> En tom lista
+            har noll noder.</p>
+        <pre>    def antal(p):
+        if p == None: 
+            return 0
+	else:        
+            return 1 + antal(p.next)
+</pre>
+        <p>Anropet <em>antal(p)</em> ger nu rätt svar!</p>
+        <hr>
+        <h2>Rekursiva tankar för binärträd</h2>
+        <p><strong>Fråga:</strong> Hur många noder finns i binärträdet? <br><strong>Rekursivt svar:</strong> En nod mer
+            än i vänsterträdet och högerträdet tillsammans<br><strong>Basfall:</strong> Ett tomt träd har noll noder.
+        </p>
+        <pre>    def antal(p):
+        if p == None: 
+            return 0
+        else:
+            return 1 + antal(p.left) + antal(p.right)
+</pre>
+        <p>Anropet <em>antal(root)</em> ger nu rätt svar!</p>
+        <hr>
+        <p>Sökning i ett binärt sökträd kan implementeras rekursivt om man låter anropet <em>finns(p,value)</em>
+            returnera <em>True</em> ifall ordet finns i det delträd där <em>p</em> är rot.</p>
+        <pre>    def finns(p,value):
+        if p == None: 
+            return False
+        if value == p.value: 
+            return True
+        if value &lt; p.value: 
+            return finns(p.left,value)
+        if value &gt; p.value: 
+            return finns(p.right,value)
+</pre>
+        <p>Den här funktionen kan du använda i labb 3! <br>Där ska du göra en klass som fungerar som ett
+            <em>abstrakt</em> binärt sökträd med operationer för att stoppa in ett element, söka efter ett värde och
+            skriva ut alla värden.</p>
+        <h2>Utskrift av binärträd: inorder, preorder, postorder</h2>
+        <p>Om man ska skriva ut alla talen i trädet vill man oftast göra det i så kallad <em>inordning</em> (eng.
+            inorder), dvs från vänster till höger. <br><strong>Fråga:</strong> Hur skriver man ut trädet i inordning?
+            <br><strong>Rekursivt svar:</strong> Först skriver man ut vänsterträdet, sedan rottalet, sist
+            högerträdet.<br><strong>Basfall:</strong> Ett tomt träd skriver man inte ut.</p>
+        <p><br>Följande funktion gör att <em>write(root)</em> skriver ut 1 17 666 4711 9999 för vårt träd.</p>
+        <pre>#Inordning
+    def inorder(p):
+        if p != None:
+            inorder(p.left)
+            print(p.value)
+            inorder(p.right)
+</pre>
+        <p>Om man kastar om dom tre sista satserna får man ändå ut alla talen på skärmen men i andra ordningar.
+            <em>Preordning</em> (eng. preorder) innebär att rottalet skrivs först, sedan vänsterträdet och sist
+            högerträdet. I vårt exempel blir ordningen 4711 17 1 666 9999.</p>
+        <p>Om vi återgår till orkesterträdet kan vi se att preordning faktiskt ger vettigare utskrift. Så här blir koden
+            i det fallet.</p>
+        <pre>#Preordning     
+    def preorder(p):
+        if p != None:
+            print(p.value)
+            preorder(p.down)
+            preorder(p.right)
+</pre>
+        <p>Utskriften blir då den naturliga. Om vi för tydlighets skull använder indragning av orden på lägre nivå blir
+            utskriften</p>
+        <pre>    Orkester              
+        Blås
+            Trä
+            Bleck
+        Stråk
+            Vi
+            Va
+            Vc
+            Kb
+        Slag
+</pre>
+        <p>(Hur gör man för att få dessa indragningar?)</p>
+        <p>Slutligen kan man skriva ut i <em>postordning</em> (eng. postorder) och det innebär att vänsterträdet skrivs
+            först, sedan högerträdet och sist roten. Det ger 1 666 17 9999 4711 i vårt exempel.</p>
+
+    </div>
+</div>

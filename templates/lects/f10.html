@@ -1,0 +1,516 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 10: Komprimering</h1>
+
+
+        <ul>
+            <li>Läsanvisningar: Tas ej upp i kursboken men se t ex <a class="inline_disabled external"
+                    href="https://www.ics.uci.edu/~dan/pubs/DataCompression.html" target="_blank"
+                    rel="noreferrer noopener"><span>https://www.ics.uci.edu/~dan/pubs/DataCompression.html</span><span
+                        class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                        role="presentation"><svg viewBox="0 0 1920 1920" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                            <path
+                                d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                        </svg>
+                        <span class="screenreader-only">Links to an external site.</span></span></a></li>
+            <li>Tal i bas 2, 8 och 16</li>
+            <li>Filformat (.txt .doc .jpg etc)</li>
+            <li>Storleksordningar data</li>
+            <li>Komprimering</li>
+            <li>Följdlängdskodning (run-length encoding)</li>
+            <li>Huffmankodning</li>
+            <li>Lempel-Ziv-kodning</li>
+            <li>Entropi</li>
+            <li>Komprimering av bilder</li>
+            <li>Komprimering av rörliga bilder</li>
+            <li>Komprimering av ljud</li>
+            <li>Felkorrektion</li>
+            <li>Hammingavstånd</li>
+            <li>Lättsam introduktion till komprimering:&nbsp;<em><a href="https://unwttng.com/compression-decompressed"
+                        target="_blank" class="external"
+                        rel="noreferrer noopener"><span>https://unwttng.com/compression-decompressed</span><span
+                            class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                            role="presentation"><svg viewBox="0 0 1920 1920" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                                <path
+                                    d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                    stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                            </svg>
+                            <span class="screenreader-only">Links to an external site.</span></span></a></em></li>
+            <li>Artikel om ett komprimeringsproblem:<em>&nbsp;<a
+                        href="http://dl.acm.org/citation.cfm?id=2667432.2667442&amp;coll=DL&amp;dl=ACM&amp;CFID=577110047&amp;CFTOKEN=41726915"
+                        class="external" target="_blank" rel="noreferrer noopener"><span>Image compression for a small
+                            satellite: lessons learned</span><span class="external_link_icon"
+                            style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                                viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                                <path
+                                    d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                    stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                            </svg>
+                            <span class="screenreader-only">Links to an external site.</span></span></a></em></li>
+        </ul>
+        <hr>
+        <h3>Binära tal (och andra baser)</h3>
+        <p>Till vardags använder vi decimala talsystemet med tio siffror: 0-9. Andra talsystem finns, t ex binära tal
+            (två siffror: 0-1), oktala tal (åtta siffror: 0-7) och hexadecimala tal (sexton siffror:0-F).</p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td><strong>Decimalt</strong></td>
+                    <td><strong>Binärt</strong></td>
+                    <td><strong>Oktalt</strong></td>
+                    <td><strong>Hexadecimalt</strong></td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>10</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>11</td>
+                    <td>3</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>100</td>
+                    <td>4</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>101</td>
+                    <td>5</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>110</td>
+                    <td>6</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>111</td>
+                    <td>7</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>1000</td>
+                    <td>10</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>1001</td>
+                    <td>11</td>
+                    <td>9</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>1010</td>
+                    <td>12</td>
+                    <td>A</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>1011</td>
+                    <td>13</td>
+                    <td>B</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>1100</td>
+                    <td>14</td>
+                    <td>C</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>1101</td>
+                    <td>15</td>
+                    <td>D</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>1110</td>
+                    <td>16</td>
+                    <td>E</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>1111</td>
+                    <td>17</td>
+                    <td>F</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>10000</td>
+                    <td>20</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>10001</td>
+                    <td>21</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>10010</td>
+                    <td>22</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>10011</td>
+                    <td>23</td>
+                    <td>13</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>10100</td>
+                    <td>24</td>
+                    <td>14</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Det är extra enkelt att konvertera binära tal till oktala resp hexadecimala: tre binära siffror ger en oktal
+            siffra, och fyra binära siffror ger en hexadecimal siffra.</p>
+        <p>I python kan man skriva binära, oktala och hexadecimala tal direkt, med prefixet
+            <strong>0b</strong>,<strong>0o</strong> respektive <strong>0x</strong>.<br>Minnesadresser skrivs ut som
+            hexadecimala tal, till exempel:</p>
+        <pre>&lt;__main__.MittEgetObjekt instance at 0x7f7cf8cb22d8&gt;</pre>
+        <hr>
+        <h2>Komprimering</h2>
+        <p>Komprimering innebär att man använder någon metod för att minska storleken på en fil. Vi skiljer mellan
+            <em>förlustfri komprimering</em> (non-lossy compression) där det går att dekomprimera för att få tillbaka
+            filen i ursprungligt skick och <em>förstörande komprimering</em> (lossy compression) där man tar bort data.
+            Att det går att komprimera utan att förstöra en fil beror på att filer oftast har redundans, dvs innehåller
+            mer än nödvändigt.</p>
+        <h2>Följdlängdskodning - RLE</h2>
+        <p>I följdlängdskodning, förkortat RLE (Run-Length-Encoding), utnyttjar man att en följd av likadana tecken kan
+            lagras med antal istället för att skrivas ut.</p>
+        <p><em>ÅÅÅÅH! JAAAAAAA! AAAAAAAAAAAAH.</em></p>
+        <p>Vi ersätter följderna av <em>Å</em> och <em>A</em> med antalet följt av det upprepade tecknet:</p>
+        <pre>4ÅH! J7A! 12AH.
+</pre>
+        <p>Men om grundtexten innehåller siffror blir det svårtolkat. Därför väljer vi ett bryttecken, t ex
+            <strong>§</strong>, som vi är säkra på inte kommer att förekomma i texten.</p>
+        <pre>§4ÅH! J§7A! §12AH.</pre>
+        <p>Algoritmen blir enkel, men tyvärr inte så användbar för textkomprimering eftersom de flesta texter inte
+            innehåller längre följder av samma tecken.</p>
+        <h2>Huffmankodning</h2>
+        <p>Om vi vet hur vanliga olika tecken är i texten kan vi ställa upp en tabell där vi för varje tecken kan ange
+            sannolikheten för att ett visst tecken ska dyka upp. I David A. Huffmans metod kodar man varje tecken med
+            ett binärt tal, där vanligare tecken får kortare koder. Algoritmen som beräknar vilket tecken som ska få
+            vilken binär kod går ut på att man ritar upp ett binärt träd, där varje tecken ses som ett löv. Sedan
+            numrerar man trädets grenar med 0 och 1 och följer trädet från roten ut till varje löv för att se koderna.
+        </p>
+        <ol>
+            <li>Sortera tecknen som ska kodas i stigande sannolikhetsordning.</li>
+            <li>Rita grenar från de två tecken som har lägst sannolikhet och låtsas att vi har ett nytt tecken med
+                sannolikhet som är summan av deras sannolikheter. Numrera ena grenen med 0 och andra med 1.</li>
+            <li>Sortera in det nya "låtsastalet".</li>
+            <li>Upprepa punkt 2 tills alla tecken (även de nytillkomna) kommit med. Roten bör få sannolikhet 1.</li>
+            <li>Börja från roten och följ grenarna ut till ett löv. Samla nollor och ettor på vägen - dessa ger koden
+                för lövets tecken.</li>
+        </ol>
+        <p>Vi illustrerar algoritmen med ett exempel. En genomgång av skräcklitteraturen ger följande frekvenstabell:
+        </p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td>Huffmankod</td>
+                    <td>Tecken</td>
+                    <td>Sannolikhet</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>G</td>
+                    <td>0.05</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>R</td>
+                    <td>0.05</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>!</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>.</td>
+                    <td>0.15</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>A</td>
+                    <td>0.15</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>H</td>
+                    <td>0.2</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>I</td>
+                    <td>0.3</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><br>Texten <em>HAHA!<strong>IIIIIIH!</strong>AHRG...</em> skulle alltså kodas som</p>
+        <pre>01 101 01 101 001 11 11 11 11 11 11 01 001 101 01 0001 0000 100 100 100
+</pre>
+        <p>Huffmankodning är en <em>statistisk metod</em>. Ett hjälprogram finns under <a class="inline_disabled"
+                href="https://canvas.kth.se/courses/37553/files/folder/F%C3%B6rel%C3%A4sningar/F10"
+                target="_blank">Filer</a>.</p>
+        <h2>Lempel-Ziv</h2>
+        <p>Alla texter följer inte statistiken. Här följer ett utdrag ur romanen <em>Gadsby</em> av Ernest Vincent
+            Wright (1872-1939).</p>
+        <p><em> IF YOUTH, THROUGHOUT all history, had had a champion to stand up for it; to show a doubting world that a
+                child can think; and, possibly, do it practically; you wouldn't constantly run across folks today who
+                claim that ''a child don't know anything.'' A child's brain starts functioning at birth; and has,
+                amongst its many infant convolutions, thousands of dormant atoms, into which God has put a mystic
+                possibility for noticing an adult's act, and figuring out its purport.</em></p>
+        <p>Jacob Ziv och Abraham Lempel uppfann en förutsättningslös metod som anpassar sig till indata. Principen är
+            att man går igenom filen och bygger en ordlista som används för kodningen. Lempel-Ziv finns i ett otal olika
+            varianter: LZ77, LZSS, LZFG, LZW, LZMW, LZAP, LZY, LZP, osv. Så här fungerar LZW (en variant gjord av T.
+            Welch):</p>
+        <ul>
+            <li>Läs in tecken för tecken och slå ihop till en sträng s.</li>
+            <li>Fortsätt på det viset så länge som strängen redan finns med i ordlistan.</li>
+            <li>Så småningom får vi en sträng som inte finns i ordlistan (s finns med men inte s+c).</li>
+            <li>Skriv då ut koden för strängen s, skriv ut tecknet c, och lägg in s+c i ordlistan.</li>
+        </ul>
+        <pre>def lzw(text):<br>    table = Table()<br>    q = Queue()<br>    for c in text: # spara texten tecken för tecken i en kö<br>        q.enqueue(c)<br><br>    s = ""<br>    kodtext = "" # här sparas det kodade meddelandet<br>    while not q.isEmpty():<br>        print(table)<br>        c = q.dequeue()<br>        if table.exists(s+c):<br>            s = s + c<br>        else:<br>            kodtext += str(table.code(s)) + c<br>            table.add(s + c)<br>        s = ""<br>    if not s == "":<br>        kodtext += str(table.code(s))<br><br>    return kodtext
+</pre>
+        <p>Klassen Table (som används för ordlistan) är tänkt att vara en datastruktur där man kan stoppa in strängar
+            med add(), kolla om en sträng finns med exists(), och få ut en kod för en given sträng med code().
+            <br>LZ-komprimering används i många komprimeringsprogram, t ex compress, zip, WinZip och GZip (här i
+            kombination med Huffmankodning).</p>
+        <p>Exempel: Använd LZW-algoritmen ovan för att komprimera NÄSSNUVSNORSNOK</p>
+        <p>Om vi använder en vektor som tabell och för enkelhets skull kodar strängarna med vektorindex får vi tabellen:
+        </p>
+        <p>&nbsp;</p>
+        <table>
+            <tbody>
+                <tr>
+                    <td><strong>code</strong></td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">2</td>
+                    <td style="text-align: center;">3</td>
+                    <td style="text-align: center;">4</td>
+                    <td style="text-align: center;">5</td>
+                    <td style="text-align: center;">6</td>
+                    <td style="text-align: center;">7</td>
+                    <td style="text-align: center;">8</td>
+                </tr>
+                <tr>
+                    <td><strong>sträng</strong></td>
+                    <td>"N"</td>
+                    <td>"Ä"</td>
+                    <td>"S"</td>
+                    <td>"SN"</td>
+                    <td>"U"</td>
+                    <td>"V"</td>
+                    <td>"SNO"</td>
+                    <td>"R"</td>
+                    <td>"SNOK"</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>och det komprimerade ordet blir: NÄS2NUV3OR6K</p>
+        <h2>Entropi</h2>
+        <p>Hur mycket kan man komprimera utan att förlora information? <br>Om det var möjligt att komprimera hur mycket
+            som helst skulle vi kunna få ner varje fil till en bit, men det kan vi uppenbarligen inte. Det finns alltså
+            en undre gräns för hur kompakt man kan få en fil med förlustfri komprimering. Om man känner till
+            sannolikheten för varje tecken som ska kodas (som i skräckexemplet ovan) kan man beräkna <em>entropin</em>
+            som ger en undre gräns för medellängden hos en kod.</p>
+        <p>Anta att vi har en teckenmängd m<sub>1</sub>, m<sub>2</sub>,...,m<sub>n</sub> (t ex alfabetet) och att
+            sannolikheten för att tecknet m<sub>i</sub> ska förekomma är P(m<sub>i</sub>). <br>Då är
+            L(m<sub>i</sub>)=-log(P(m<sub>i</sub>)) minimilängden för ett kodord för tecknet m<sub>i</sub> och
+            <br>L<sub>medel</sub> = P(m<sub>1</sub>)*L(m<sub>1</sub>) + ... + P(m<sub>n</sub>)*L(m<sub>n</sub>)
+            <br><br>medellängden för koderna (entropin).</p>
+        <h2>Komprimering av bilder</h2>
+        <p>Det är vanligt att varje bildpunkt (pixel) i en färgbild representeras med ett 24-bitars binärt tal (vilket
+            ger oss åtta bitar för vardera rött, grönt resp blått). Då tar en färgbild på 100x100 pixlar 240000 bitar,
+            dvs 240000/8 = 30000 Byte = 30 kB &nbsp;och en bild som täcker en 1080x1920-skärm tar ca 6 MB.</p>
+        <table>
+            <tbody>
+                <tr>
+                    <td><img src="http://www.csc.kth.se/utbildning/kth/kurser/2D1320/gemensam/bilder/Elon24082.gif"
+                            alt="gif 24 kB" class="broken-image" width="178" height="199"></td>
+                    <td><img src="http://www.csc.kth.se/utbildning/kth/kurser/2D1320/gemensam/bilder/Elon3328.jpg"
+                            alt="jpg 3 kB" class="broken-image" width="178" height="199"></td>
+                    <td><img src="http://www.csc.kth.se/utbildning/kth/kurser/2D1320/gemensam/bilder/Elon1533.jpg"
+                            alt="jpg 1.5 kB" class="broken-image" width="178" height="199"></td>
+                </tr>
+                <tr>
+                    <td>GIF 24 kB</td>
+                    <td>JPEG 3 kB</td>
+                    <td>JPEG 1.5 kB</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Vilken redundans kan finnas i en bild? Vissa färger kanske är vanligare, så att vi kan använda Huffmankodning
+            för att få kortare koder för dessa. I foton är närliggande pixlar ofta lika (blå himmel t ex), likaså i
+            streckteckningar och grafer (bara svarta och vita pixlar). Där kan man använda RLE genom att räkna antal
+            vita resp svarta pixlar i följd. Även varianter av LZW kan användas - då innehåller tabellen pixelinfo
+            istället för strängar! Vi kan också använda förstörande komprimering för att ta bort information som ögat
+            ändå inte ser.</p>
+        <p>GIF (Graphics Interchange Format) är ett filformat för bilder där färgkodningen görs med 8 bitar, dvs man får
+            2<sup>8</sup>=256 färger. Sen används en variant av LZW för att komprimera. Den komprimeringen är förlustfri
+            och storleken minskas med ungefär faktorn 4.</p>
+        <p>JPEG (Joint Photographic Experts Group) är bättre för foton och andra bilder där närliggande pixlar har
+            liknande färger. Färgbilder delas upp i en belysningsdel och en färgdel, där färgdelen komprimeras med
+            förstörande komprimering eftersom ögat är mindre känsligt för färgförändringar. Sen används en kombination
+            av RLE och Huffmankodning för att koda grupper av pixlar. Komprimeringsgraden är parameter till algoritmen,
+            så man kan bestämma själv hur hårt man vill komprimera. Färgkodningen görs med 24 bitar, dvs 2<sup>24</sup>
+            (nästan 17 miljoner) färger.</p>
+        <h2>Komprimering av rörliga bilder</h2>
+        <p>En videofil innehåller massor av bilder och dessutom ljud så det är extra viktigt att kunna komprimera såna.
+            Dekomprimeringen måste gå snabbt om man direkt ska kunna se filmen i realtid. Det mest kända formatet för
+            rörliga bilder är MPEG (Moving Picture Experts Group). MPEG är egentligen en samling standarder för
+            kombinationer av ljud och video.</p>
+        <p>Komprimeringen av video-delen kan delas upp i <em>bildkomprimering</em> av varje enskild bildruta och
+            <em>tidskomprimering</em> där man utnyttjar likhet mellan på varandra följande bilder.</p>
+        <p>För bildkomprimeringen används i regel JPEG. För tidskomprimeringen finns ett antal olika metoder:</p>
+        <ul>
+            <li>Koda <em>likheter</em> (att en del av bilden ser likadan ut som i förra rutan).</li>
+            <li>Koda <em>förskjutningar</em> (att en del av bilden har förskjutits sen förra rutan).</li>
+            <li>Koda <em>skillnaden</em> mellan två bildrutor.</li>
+            <li>Koda <em>förväntad</em> rörelse.</li>
+        </ul>
+        <p>Tidskomprimeringen kan göra det knepigare att redigera filmen.</p>
+        <h2>Komprimering av ljud</h2>
+        <p>Digital lagring av ljud innebär automatiskt en komprimering eftersom vi samplar en analog ljudkurva i ett
+            ändligt antal punkter. Vidare komprimering av digitala ljudfiler kan göras med RLE eller Huffmankodning.
+            Däremot fungerar inte LZ-metoderna särskilt bra, eftersom de bygger på att man hittar upprepningar. Och även
+            om t ex ett musikstycke upprepar sig är det osannolikt att samma upprepningar skulle återfinnas i ljudfilen
+            efter samplingen.</p>
+        <p><span><a href="http://www.csc.kth.se/~lk/music/ljudexempel.html">exempel</a></span></p>
+        <p>När det gäller ljud kan man också använda förstörande metoder Två exempel på sådana är
+            <em>tystnadskomprimering</em> där man ersätter mycket svaga ljud med tystnad och <em>companding</em> där man
+            minskar ordlängden för varje ljudpunkt (t ex från 16 till 12 bitar).</p>
+        <p>MP3 (MPEG Audio Layer-3 encoding) använder en kombination av tekniker där man utnyttjar en modell av den
+            mänskliga hörseln samt Huffmankodning.</p>
+        <p>Video om <a href="http://www.xiph.org/video/" class="external" target="_blank"
+                rel="noreferrer noopener"><span>digitala medier</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a></p>
+        <h2>Felkorrektion</h2>
+        <p>Vill man gardera sig mot fel kan man lägga till redundans (motsatsen till komprimering). Det finns många
+            olika sätt att göra det på, här följer några exempel:</p>
+        <ul>
+            <ul>
+                <li>Kontrollsiffra (t ex sista siffran i ett personnummer).</li>
+                <li>Skicka kopior av hela meddelandet, minst tre behövs om man ska kunna korrigera.</li>
+                <li>Paritetsbitar, att man lägger till en etta eller nolla till ett binärt tal för att göra det udda.
+                    Ett jämnt tal innebär att nån bit är fel.</li>
+                <li>Hammingavstånd: Lägg till så många extrabitar till koden så att varje enbitsfel ger ett kodord som
+                    skiljer sig i en bit från det korrumperade kodordet, men i flera bitar från alla övriga kodord. Två
+                    kodord har Hammingavstånd <strong>d</strong> om dom skiljer sig åt i d bitar.<br>En koduppsättning
+                    har Hammingavstånd <strong>d</strong> om <em>alla</em> kodord är minst d ifrån varann. Givet koderna
+                    nedan - hur ska vi tolka meddelandet <strong>10010 01110 10101</strong> ?</li>
+            </ul>
+        </ul>
+        <table style="height: 174px;" width="160" border="1">
+            <tbody>
+                <tr>
+                    <td style="width: 31.6px;"></td>
+                    <td style="width: 31.6px;">A</td>
+                    <td style="width: 70.8px;">01011</td>
+                </tr>
+                <tr>
+                    <td style="width: 31.6px;"></td>
+                    <td style="width: 31.6px;">F</td>
+                    <td style="width: 70.8px;">10010</td>
+                </tr>
+                <tr>
+                    <td style="width: 31.6px;"></td>
+                    <td style="width: 31.6px;">I</td>
+                    <td style="width: 70.8px;">01100</td>
+                </tr>
+                <tr>
+                    <td style="width: 31.6px;"></td>
+                    <td style="width: 31.6px;">N</td>
+                    <td style="width: 70.8px;">10101</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>&nbsp;Hamminavstånd exempel</h3>
+        <p>A och F skiljer sig 3 bitar, A och N skiljer sig fyra bitar. Skillnaderna visas i tabellen nedan.
+            Hammingavståndet för koduppsättningen är minsta avståndet mellan två koder d.v.s 3.</p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>A</td>
+                    <td>F</td>
+                    <td>I</td>
+                    <td>N</td>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td></td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td></td>
+                    <td></td>
+                    <td>4</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>I</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>N</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

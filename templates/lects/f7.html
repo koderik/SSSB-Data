@@ -1,0 +1,372 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 7: Grafer</h1>
+
+
+        <table style="width: 393px;" border="1">
+            <tbody>
+                <tr>
+                    <td style="width: 148px;"><strong>Mål</strong></td>
+                    <td style="width: 245px;"><strong>Läs i kursboken<br></strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 148px;">
+                        <p>Grafer</p>
+                    </td>
+                    <td style="width: 245px;"><a class="reference internal external"
+                            href="https://runestone.academy/runestone/books/published/pythonds/Graphs/toctree.html"
+                            target="_blank"><span>8.1-8.16. Graphs and Graph Algorithms</span></a></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>&nbsp;</p>
+        <ul>
+            <li>Grafer</li>
+            <li>Problemträd</li>
+            <li>Breddenförstsökning</li>
+            <li>Djupetförstsökning</li>
+        </ul>
+        <h3>Grafer</h3>
+        <ul>
+            <li>En allmän graf består av en samling hörn (<em>vertices</em>) med kanter (<em>edges</em>) emellan.</li>
+            <li>Grafen är riktad om kanterna är riktade (pilar).</li>
+            <li>Antalet kanter från ett hörn är hörnets grad (<em>degree</em>).</li>
+            <li>En stig (<em>path</em>) är en väg från ett hörn till ett annat, dvs en följd av intilliggande kanter.
+            </li>
+            <li>En cykel är en stig där man startar och slutar i ett och samma hörn.</li>
+            <li>Om grafen inte har några cykler är den acyklisk.</li>
+            <li>I en viktad graf har kanterna vikter.</li>
+        </ul>
+        <h3>Abstrakt datatyp för grafer</h3>
+        <p>Följande metoder skulle en graf kunna ha:</p>
+        <p><strong>addVertex(node)</strong> Lägger till hörnet <em>node</em> till grafen. <br><strong>addEdge(node1,
+                node2) </strong> Drar en kant mellan hörnen node1 och node2. <br><strong>v = getVertex(key)</strong>
+            Hittar det hörn som har nyckeln <em>key</em> <br><strong>vlist = getVertices()</strong> Returnerar en lista
+            med alla hörn.</p>
+        <p>En graf kan implementeras med en <em>grannmatris</em> (adjacency matrix) eller <em>grannlista</em> (adjacency
+            list).</p>
+        <p>En grannmatris har ett element för varje möjlig kant mellan två hörn. Elementet kan vara True/False (för en
+            oviktad graf) eller ha ett värde som anger kantens vikt (för en viktad graf).</p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>A</td>
+                    <td>B</td>
+                    <td>C</td>
+                    <td>D</td>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td></td>
+                    <td>5</td>
+                    <td></td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>5</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>1</td>
+                    <td></td>
+                    <td>2</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>En gles grannmatris ger ineffektiv lagring, så för grafer med relativt få kanter är det bättre att använda en
+            grannlista. Grannlistan har ett element för varje hörn, och i det lagras en lista (eller vektor) med
+            kanterna.</p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td>A</td>
+                    <td>[B, 5], [D, 1]</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>[A, 5]</td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>[D, 2]</td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>[A, 1], [C, 2]</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Problemträd</h3>
+        <p>En mycket stor klass av praktiska problem kan beskrivas med <em>problemträd</em> och lösas med trädgenomgång:
+            bredden först eller djupet först. Ett problemträd är en riktad, acyklisk graf.</p>
+        <p>Problemträd uppkommer ständigt i praktiken. Man brukar kalla startnoden för <em>urmoder</em> eller
+            <em>stamfar</em> och noderna under den för <em>barn</em>.
+        </p>
+        <h3>Breddenförstsökning</h3>
+        <p><img src="https://upload.wikimedia.org/wikipedia/commons/5/5d/Breadth-First-Search-Algorithm.gif"
+                alt="wikimedia - breddenförstsökning" width="200" height="200"></p>
+        <p>Nästa laboration går ut på att finna kortaste vägen från <strong>söt</strong> till <strong>sur</strong> genom
+            att byta en bokstav i taget och bara använda ord i ordlistan, till exempel så här: <br>söt -&gt; söm -&gt;
+            döm -&gt; dum -&gt; dur -&gt; sur</p>
+        <p>Problemträdets stamfar <strong>söt</strong> har barnen göt, löt, nöt, röt osv och barnbarnen get, gök, göl,
+            lat, lön osv. Enligt kedjan ovan är <strong>sur</strong> barnbarnbarnbarnbarn till <strong>söt</strong>, men
+            sur finns säkert redan tidigare i problemträdet. För att finna den första förekomsten gör man en
+            breddenförstsökning enligt följande.</p>
+        <p>Lägg stamfadern som första och enda objekt i en kö. Gör sedan följande om och om igen: Plocka ut den första
+            ur kön, skapa alla barn till denne och lägg in dom sist i kön. Första förekomsten av det sökta ordet ger
+            kortaste lösningen.</p>
+        <p>Breddenförstsökningsalgoritmen kan sammanfattas så här.</p>
+        <ol>
+            <li>Lägg stamfadern i kön.</li>
+            <li>Ta ut det första objektet ur kön.</li>
+            <li>Skapa alla dess barn och lägg in dom i kön.</li>
+            <li>Om någon av barnen är lösningen så är vi klara. Annars - upprepa från punkt 2 tills kön blir tom.</li>
+            <li>När lösningen hittas, följ förälderpekarna och skriv ut kedjan.</li>
+        </ol>
+        <p>Man kan spara in både tid och utrymme om man undviker att skapa barn som är kopior av tidigare släktingar (t
+            ex <strong>nöt</strong>s barn <strong>söt</strong>), I den här kursen kallar vi dem <em>dumbarn</em>. I
+            algoritmsammanfattningen ovan kan vi hamna i en oändlig loop om vi inte tar hänsyn till dumbarnen.</p>
+        <p>Om man bara lägger själva orden i kön finns det ingen möjlighet att i efterhand tala om vägen från söt till
+            sur. Därför bör man för varje nytt ord skapa en liten nod som innehåller ordet och en referens till
+            föräldern och det man lagrar i kön är denna nod.</p>
+        <p>Breddenförstsökning ger alltid den <em>kortaste</em> lösningen. Ofta är det den man är ute efter. Några andra
+            problemexempel är följande.</p>
+        <h4>Flygresa från Stockholm till Windhoek</h4>
+        <p>Stockholm är urmoder, destinationer med <a
+                href="http://worldairlinenews.files.wordpress.com/2013/06/scandinavian-sas-arn-62013-route-map.jpg"
+                class="external" target="_blank" rel="noreferrer noopener"><span>direktflyg från Stockholm</span><span
+                    class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                    role="presentation"><svg viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a> blir söner och så
+            vidare. Dumbarn är destinationer man redan "passerat". Breddenförstsökning ger en resa med så få
+            mellanlandningar som möjligt.</p>
+        <h3>Totalsökning, brute force</h3>
+        <p>Att det är minst antal mellanlandningar behöver inte betyda att det är den resrutt som tar kortast tid. För
+            att räkna ut den snabbaste resrutten kan man göra en totalsökning och gå igenom alla kombinationer av
+            resrutter. Att systematiskt pröva alla tänkbara lösningar brukar kallas <em>brute force.</em> Detta tar
+            exponentiell tid&nbsp;<span class="math_equation_latex fade-in-equation" style="null"><span
+                    class="MathJax_Preview" style="color: inherit;"></span><span
+                    style="font-size: 100%; display: inline-block; position: relative;" class="MathJax_SVG"
+                    id="MathJax-Element-1-Frame" tabindex="0"
+                    data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><mi>O</mi><mrow><mo>(</mo><msup><mi>k</mi><mi>n</mi></msup><mo>)</mo></mrow></math>"
+                    role="presentation"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="6.399ex" height="2.725ex"
+                        style="vertical-align: -0.745ex;" viewBox="0 -852.5 2755.3 1173.4" role="img" focusable="false"
+                        aria-hidden="true">
+                        <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)">
+                            <use xlink:href="#MJMATHI-4F" x="0" y="0"></use>
+                            <g transform="translate(930,0)">
+                                <use xlink:href="#MJMAIN-28" x="0" y="0"></use>
+                                <g transform="translate(389,0)">
+                                    <use xlink:href="#MJMATHI-6B" x="0" y="0"></use>
+                                    <use transform="scale(0.707)" xlink:href="#MJMATHI-6E" x="737" y="513"></use>
+                                </g>
+                                <use xlink:href="#MJMAIN-29" x="1435" y="0"></use>
+                            </g>
+                        </g>
+                    </svg><span class="MJX_Assistive_MathML" role="presentation"><math
+                            xmlns="http://www.w3.org/1998/Math/MathML">
+                            <mi>O</mi>
+                            <mrow>
+                                <mo>(</mo>
+                                <msup>
+                                    <mi>k</mi>
+                                    <mi>n</mi>
+                                </msup>
+                                <mo>)</mo>
+                            </mrow>
+                        </math></span></span>
+                <script type="math/tex" id="MathJax-Element-1">O\left(k^n\right)</script>
+            </span>, vilket blir orimligt långsamt för stora n.</p>
+        <h3>Dynamisk programmering</h3>
+        <p>Om alla resrutter är enkelriktade mot resmålet d.v.s inga returresor finns med så är grafen riktad. Då kan
+            man använda sig av dynamisk programmering som innebär att man sparar undan och utnyttjar tidigare uträknade
+            värden när man ska beräkna nästa värde.&nbsp;</p>
+        <h3>Lönsam valutaväxling</h3>
+        <p>Finns det någon lönsam växlingskedja av typen <strong>1.00 SEK -&gt; 0.11 EURO -&gt; 0.13 USD -&gt; ... -&gt;
+                1.02 SEK</strong> ? Vi vill ha en algoritm som kan besvara den frågan.</p>
+        <p>Vi antar att alla växlingskurser är kända, t ex <strong>1.00 SEK -&gt; 0.14 USD</strong> och <strong>1.00 USD
+                -&gt; 7.05 SEK</strong>. En <strong>valutanod</strong> är ett belopp i en viss valuta. Vi utgår från
+            valutanoden <strong>1.00 SEK</strong> och låter den vara urmoder i ett problemträd. Urmoderns barn är alla
+            valutanoder som kan åstadkommas med en växling, till exempel <strong>0.14 USD</strong> och <strong>16.5
+                JPY</strong>. Barnet <strong>0.14 USD</strong> har i sin tur barn, däribland <strong>0.987 SEK</strong>.
+            Just den är ett så kallat dumbarn och kan lugnt glömmas bort, eftersom den är sämre än en tidigare
+            valutanod.</p>
+        <p>Om man går igenom problemträdet nivå för nivå, dvs generation efter generation, kanske man till sist stöter
+            på noden <strong>1.05 SEK</strong>. Därmed har man funnit en lönsam växlingskedja och det är bara att sätta
+            igång och växla så fort som möjligt innan kurserna ändras. För att avbryta trädgenomgången och hals över
+            huvud återvända till huvudprogrammet kan man generera ett <em>särfall</em> med raise Klar(meddelande) och se
+            till att huvudprogrammet har</p>
+        <pre>   try: 
+      - - -            # Om särfallet uppstår här...
+   except Klar: 
+      - - -            # ...teleporteras man hit
+</pre>
+        <p>Allra enklaste sättet att definiera Klar är:</p>
+        <pre>class Klar(Exception):
+   pass
+</pre>
+        <p>Om man har en abstrakt kö med metoderna enqueue, dequeue och isEmpty kan breddenförstsökningen programmeras
+            ungefär så här.</p>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <pre>class Node(object):        
+    def __init__(self, amount=1.00, currency=1, parent=None):
+        # problemträdsobjekt
+        self.amount = amount          # belopp
+        self.currency = currency      # valuta, SEK, USD,...
+        self.parent = None            # förälderpekare
+
+def makechildren(node):
+   # Skapar barn och lägger dom i kön
+
+
+#Inläsning av växlingskurserna 
+q = LinkedQ()
+urmoder = Node() 
+q.enqueue(urmoder)
+try:
+    while not q.isEmpty():
+        node = q.dequeue()
+        makechildren(node)
+        # I makechildren görs "raise Klar(kedja)"
+    print("Ingen lönsam växling")
+except Klar as k: 
+    print("Växla fort:", k)
+</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Istället för try...except kan man låta makechildren returnera True när en lösning hitttats:</p>
+        <pre>foundChain = None<br>while not q.isEmpty():
+        node = q.dequeue()
+        foundChain = makechildren(node)<br>        if foundChain != None:<br>            break
+# Efter  slingan måste man kolla om man hittat en växlingskedja<br>if foundChain == None:
+    print("Det finn ingen lönsam växling")<br>else:<br>    print("Växla fort:", foundChain)<br><br></pre>
+        <p>Metoden makechildren skapar alla barn och lägger sist i kön. Om man vill bli av med dumbarnen kan man ha en
+            global lista&nbsp;<strong>best</strong> med hittills högsta belopp av varje valuta.&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+        <h3>Djupetförstsökning</h3>
+        <p><img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Depth-First-Search.gif"
+                alt="wikimedia - djupetförstsökning" width="200" height="200"></p>
+        <p>Djupetförstsökning skiljer sig från breddenförstsökning i två avseenden:</p>
+        <ul>
+            <li>Den första lösning man hittar är inte nödvändigtvis den kortaste.</li>
+            <li>Metoden fungerar inte om problemträdet har oändligt djup.</li>
+        </ul>
+        <h4>Åttadamersproblemet</h4>
+        <p>Man ska placera åtta damer på ett schackbräde så att ingen dam står på samma vågräta, lodräta eller diagonala
+            linje som någon annan.</p>
+        <p>Problemträdets urmoder är ett tomt bräde. Dom åtta barnen har en dam placerad på översta raden, barnbarnen
+            ytterligare en dam på näst översta raden etc. Problemträdet har djup åtta (fler damer kan vi inte placera
+            ut).</p>
+        <p><img src="https://canvas.kth.se/courses/37553/files/6231101/download?wrap=1" alt="chess-board_318-30285.jpg"
+                data-api-endpoint="https://canvas.kth.se/api/v1/courses/37553/files/6231101" data-api-returntype="File"
+                width="173" height="173"><br>Den första idén man får är ju att representera schackbrädet med en matris.
+            Men lösningen blir enklare om man använder en vektor, där varje element är ett heltal som representerar
+            damens position på just den raden. Då betyder queen[0]=5 att damen på rad noll står i position 5.</p>
+        <p><em>Rekursiv tanke:</em> <br>Att lösa problemet färdigt när det redan står damer på rad 0..row-1 är detsamma
+            som...<br>...att för varje tillåten damplacering på rad row lösa problemet färdigt...<br><em>Basfall:</em>
+            ... men om row=8 har man hittat en lösning.</p>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <pre>def completePartialSolution(row):
+# Fullborda partiell lösning som har damer på rad 0..row-1 
+    if row == n:
+        printSolution()
+    else:
+        for col in range(n):
+            if posOK(row,col):
+                queen[row] = col
+                completePartialSolution(row+1)
+
+def posOK(row, col):
+# Kolla om damen på rad row kan slås av damerna ovanför
+    for i in range(row):
+        if queen[i] == col: 
+            return False          #rakt ovanför
+        if queen[i]-col == row-i: 
+            return False          #snett ovanför (NV)
+        if col-queen[i] == row-i: 
+            return False          #snett ovanför (NO)
+    return True
+
+def printSolution():
+# Skriver ut den lösning som just nu är lagrad i "queen"
+        for r in range(n):
+            for col in range(n):
+                if queen[r] == col: 
+		    print("D", end = "")
+                else: 
+		    print("*", end = "")
+            print()
+        print("===============")
+
+
+n = 8
+queen=[None]*n
+completePartialSolution(0)</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p><br>Djupetförstsökning kan också programmeras som breddenförstsökningen, med den lilla skillnaden att kön
+            byts mot en <em>stack</em>. <br>Här följer några fler exempel på problem som kan lösas med
+            djupetförstsökning.</p>
+        <h4>Hitta ut ur labyrint</h4>
+        <p>En välkänd praktisk metod att <a href="http://www.xefer.com/maze-generator" class="external" target="_blank"
+                rel="noreferrer noopener"><span>utforska en labyrint</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>, uppfunnen av den
+            förhistoriska datalogen Ariadne, är att ha ett garnnystan med ena änden fastknuten i startpunkten. Man går
+            så långt man kan, markerar med krita var man varit, går bara outforskade vägar framåt och backar en bit
+            längs snöret när man kör fast. Snöret kan representeras av en stack med dom positioner som snöret för
+            tillfället ringlar igenom.</p>
+        <p>Problemträdet har startpositionen som urförälder, alla positioner på ett stegs avstånd som barn och så
+            vidare. En position som man varit på förut är ett dumbarn.</p>
+        <p>Problemträdet vi får när vi söker vägen från söt till sur är alltså exempel på en oviktad (alla kanter är
+            lika värda) riktad (<em>från</em> startordet <em>till</em> barnen), acyklisk (dumträdet hjälper oss att
+            slippa repriser) graf. Breddenförstsökning och djupetförstsökning är två olika sätt att gå igenom alla hörn.
+        </p>
+        <p>I breddenförst går vi först igenom alla hörn som ligger en kant från starthörnet, sen alla hörn som ligger
+            två kanter bort osv. Om det finns flera lösningar till problemet stöter vi på den närmaste först (men om vi
+            inte bryter där går vi igenom alla hörnen).</p>
+        <p>Med djupetförst följer vi istället en stig så långt det går via första kanten från starthörnet. När det tar
+            stopp backar vi ett steg (flera vid behov) tills det går att fortsätta framåt igen.</p>
+        <p>Problemträd är ett sätt att tänka på problem för att kunna lösa dom med grafalgoritmer. Blanda inte ihop
+            problemträd med den abstrakta datastrukturen binärträd!</p>
+        <hr>
+        <p>&nbsp;</p>
+
+    </div>
+</div>

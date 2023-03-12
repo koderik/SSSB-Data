@@ -16,6 +16,12 @@ csp = {
 }
 talisman = Talisman(app, force_https=True, content_security_policy=csp)
 
+@app.route("/munta")
+def munta():
+    # return main.html inside lects dir
+    return render_template("lects/main.html")
+
+
 
 # Add second route for /old to show old data
 @app.route("/old")

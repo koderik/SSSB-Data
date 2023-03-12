@@ -1,0 +1,392 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 11: Hashning, bloomfilter</h1>
+
+
+        <table style="width: 412px;" border="1">
+            <tbody>
+                <tr>
+                    <td style="width: 148.4px;"><strong>Mål</strong></td>
+                    <td style="width: 245.2px;"><strong>Läs i kursboken<br></strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 148.4px;">
+                        <p>Hashning</p>
+                    </td>
+                    <td style="width: 245.2px;">
+                        <p><a class="reference internal external"
+                                href="https://runestone.academy/runestone/books/published/pythonds/SortSearch/Hashing.html"
+                                target="_blank"><span>6.5. Hashing</span></a></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Idag:</p>
+        <ul>
+            <li>Pythons dictionary</li>
+            <li>Idén med hashning</li>
+            <li>Komplexiteten för sökning</li>
+            <li>Dimensionering av hashtabellen</li>
+            <li>Hashfunktionen</li>
+            <li>Krockhantering</li>
+            <li>Klassen Hashtable</li>
+            <li>Användningsaspekter</li>
+            <li>Hashning i Språkteknologi</li>
+        </ul>
+        <hr>
+        <h3>Pythons dictionary</h3>
+        <p>Med Pythons inbyggda <em>dictionary</em> har man möjlighet att skapa en uppslagslista. Man bygger upp den
+            genom att lägga in nycklar och tillhörande värden:</p>
+        <pre>  telefonnummer={}
+  telefonnummer["Linda Kann"] = "08-7909276"
+  telefonnummer["CSC-service"] = "<span>08-790 7146</span>"
+  ---
+</pre>
+        <p>Sedan kan man slå upp i listan:</p>
+        <pre>   namn = input("Vem vill du ringa till? ")
+   try:
+       print("Telefonnumret är ", telefonnummer[namn])
+   except KeyError:
+       print(namn,"finns inte med i telefonlistan")
+</pre>
+        <p>Här är det varken linjärsökning eller binärsökning som används för att hitta nyckeln, utan en ännu snabbare
+            sökmetod: <em>hashning</em>.</p>
+        <hr>
+        <h3>Idén med hashning</h3>
+        <p>Binärsökning i en sorterad lista går visserligen snabbt, men sökning i en hashtabell är oöverträffat snabbt.
+            Och ändå är tabellen helt oordnad (hash betyder ju hackmat, röra). Låt oss säga att vi söker efter Lyckan i
+            en hashtabell av längd 10000. Då räknar vi först fram <em>hashfunktionen</em> för ordet Lyckan och det ger
+            detta resultat.</p>
+        <pre>   hash("Lyckan") -&gt; 1076540772
+</pre>
+        <p>Hashvärdets rest vid division med 10000 beräknas nu</p>
+        <pre>   1076540772 % 10000 -&gt; 772
+</pre>
+        <p>och när vi kollar hashtabellens index 772 hittar vi Lyckan just där!</p>
+        <p>Hur kan detta vara möjligt? Ja, det är inte så konstigt egentligen. När Lyckan skulle läggas in i
+            hashtabellen gjordes samma beräkning och det är därför hon lagts in just på 772. Hur hashfunktionen räknar
+            fram sitt tal spelar just ingen roll. Huvudsaken är att det går fort, så att inte den tid man vinner på
+            inbesparade jämförelser äts upp av beräkningstiden för hashfunktionen.</p>
+        <h3>Komplexiteten för sökning</h3>
+        <p>Linjär sökning i en oordnad lista av längd N tar i genomsnitt N/2 jämförelser, binär sökning i en sorterad
+            lista log N men hashning går direkt på målet och kräver bara drygt en jämförelse. Varför drygt? Det beror på
+            att det är svårt att undvika <em>krockar</em>, där två olika namn hamnar på samma index.</p>
+        <h3>Dimensionering av hashtabellen</h3>
+        <p>Ju större hashtabell man har, desto mindre blir risken för krockar. En tumregel är att man bör ha minst
+            femtio procents luft i tabellen, dvs att</p>
+        <p><span class="math_equation_latex fade-in-equation" style="null"><span class="MathJax_Preview"
+                    style="color: inherit;"></span><span
+                    style="font-size: 100%; display: inline-block; position: relative;" class="MathJax_SVG"
+                    id="MathJax-Element-1-Frame" tabindex="0"
+                    data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><mi>&amp;#x03BB;</mi><mo>=</mo><mfrac><mrow><mi>a</mi><mi>n</mi><mi>t</mi><mi>a</mi><mi>l</mi><mspace width=&quot;mediummathspace&quot; /><mi>i</mi><mi>n</mi><mi>l</mi><mi>a</mi><mi>g</mi><mi>d</mi><mi>a</mi><mspace width=&quot;mediummathspace&quot; /><mi>o</mi><mi>b</mi><mi>j</mi><mi>e</mi><mi>k</mi><mi>t</mi></mrow><mrow><mi>h</mi><mi>a</mi><mi>s</mi><mi>h</mi><mi>t</mi><mi>a</mi><mi>b</mi><mi>e</mi><mi>l</mi><mi>l</mi><mi>e</mi><mi>n</mi><mi>s</mi><mspace width=&quot;mediummathspace&quot; /><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>l</mi><mi>e</mi><mi>k</mi></mrow></mfrac><mspace width=&quot;mediummathspace&quot; /><mo>=</mo><mspace width=&quot;mediummathspace&quot; /><mn>0.5</mn></math>"
+                    role="presentation"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="27.898ex"
+                        height="3.713ex" style="vertical-align: -1.116ex;" viewBox="0 -1118.3 12011.5 1598.6" role="img"
+                        focusable="false" aria-hidden="true">
+                        <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)">
+                            <use xlink:href="#MJMATHI-3BB" x="0" y="0"></use>
+                            <use xlink:href="#MJMAIN-3D" x="861" y="0"></use>
+                            <g transform="translate(1639,0)">
+                                <g transform="translate(397,0)">
+                                    <rect stroke="none" width="6795" height="60" x="0" y="220"></rect>
+                                    <g transform="translate(239,555)">
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-61" x="0" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6E" x="529" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-74" x="1130" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-61" x="1491" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6C" x="2021" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-69" x="2633" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6E" x="2979" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6C" x="3579" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-61" x="3878" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-67" x="4407" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-64" x="4888" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-61" x="5411" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6F" x="6255" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-62" x="6741" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6A" x="7170" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-65" x="7583" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6B" x="8049" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-74" x="8571" y="0"></use>
+                                    </g>
+                                    <g transform="translate(60,-402)">
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-68" x="0" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-61" x="576" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-73" x="1106" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-68" x="1575" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-74" x="2152" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-61" x="2513" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-62" x="3042" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-65" x="3472" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6C" x="3939" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6C" x="4237" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-65" x="4536" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6E" x="5002" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-73" x="5603" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-73" x="6386" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-74" x="6856" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6F" x="7217" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-72" x="7703" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6C" x="8154" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-65" x="8453" y="0"></use>
+                                        <use transform="scale(0.707)" xlink:href="#MJMATHI-6B" x="8919" y="0"></use>
+                                    </g>
+                                </g>
+                            </g>
+                            <use xlink:href="#MJMAIN-3D" x="9453" y="0"></use>
+                            <g transform="translate(10732,0)">
+                                <use xlink:href="#MJMAIN-30"></use>
+                                <use xlink:href="#MJMAIN-2E" x="500" y="0"></use>
+                                <use xlink:href="#MJMAIN-35" x="779" y="0"></use>
+                            </g>
+                        </g>
+                    </svg><span class="MJX_Assistive_MathML" role="presentation"><math
+                            xmlns="http://www.w3.org/1998/Math/MathML">
+                            <mi>λ</mi>
+                            <mo>=</mo>
+                            <mfrac>
+                                <mrow>
+                                    <mi>a</mi>
+                                    <mi>n</mi>
+                                    <mi>t</mi>
+                                    <mi>a</mi>
+                                    <mi>l</mi>
+                                    <mspace width="mediummathspace"></mspace>
+                                    <mi>i</mi>
+                                    <mi>n</mi>
+                                    <mi>l</mi>
+                                    <mi>a</mi>
+                                    <mi>g</mi>
+                                    <mi>d</mi>
+                                    <mi>a</mi>
+                                    <mspace width="mediummathspace"></mspace>
+                                    <mi>o</mi>
+                                    <mi>b</mi>
+                                    <mi>j</mi>
+                                    <mi>e</mi>
+                                    <mi>k</mi>
+                                    <mi>t</mi>
+                                </mrow>
+                                <mrow>
+                                    <mi>h</mi>
+                                    <mi>a</mi>
+                                    <mi>s</mi>
+                                    <mi>h</mi>
+                                    <mi>t</mi>
+                                    <mi>a</mi>
+                                    <mi>b</mi>
+                                    <mi>e</mi>
+                                    <mi>l</mi>
+                                    <mi>l</mi>
+                                    <mi>e</mi>
+                                    <mi>n</mi>
+                                    <mi>s</mi>
+                                    <mspace width="mediummathspace"></mspace>
+                                    <mi>s</mi>
+                                    <mi>t</mi>
+                                    <mi>o</mi>
+                                    <mi>r</mi>
+                                    <mi>l</mi>
+                                    <mi>e</mi>
+                                    <mi>k</mi>
+                                </mrow>
+                            </mfrac>
+                            <mspace width="mediummathspace"></mspace>
+                            <mo>=</mo>
+                            <mspace width="mediummathspace"></mspace>
+                            <mn>0.5</mn>
+                        </math></span></span>
+                <script type="math/tex"
+                    id="MathJax-Element-1">\lambda=\frac{antal\:inlagda\:objekt}{hashtabellens\:storlek}\:=\:0.5</script>
+            </span></p>
+        <p>&nbsp;Då kommer krockarna att bli få.</p>
+        <h3>Hashfunktioner</h3>
+        <p>Oftast gäller det först att räkna om en sträng till ett stort tal. Funktionen <em>ord(tkn)</em> i Python
+            konverterar ett tecken till motsvarande ordningsnummer.</p>
+        <p>T ex är <br>ord("A") = 65 <br>ord("B") = 66 <br>ord("C") = 67 <br>Då kan vi räkna om strängen "ABC" till
+            talet 656667, genom att multiplicera den första bokstaven med 10000, den andra med 100, den tredje med 1 och
+            slutligen addera talen. På liknande sätt gör metoden hash(key) i Python men den använder 32 i stället för
+            100. För en binär dator är det nämligen mycket enklare att multiplicera med 32 än med 100. Här är en
+            förenklad variant:</p>
+        <pre>def hash2(s):
+    result = 0
+    for c in s:                    
+        result = result*32 + ord(c) 
+    return result
+</pre>
+        <p>Om nyckeln är ett datum eller personnummer behöver vi inte konvertera till tal.</p>
+        <ul>
+            <li>Man kan "vika" talet genom att dela upp det i lika stora delar som sedan summeras, t ex
+                <strong>20+17+09+11 = 57</strong>,</li>
+            <li>Eller kvadrera det:<strong>20170911² = 406865</strong>650<strong>569921</strong>&nbsp;och plocka ut de
+                mittersta siffrorna: <strong>650</strong>.</li>
+        </ul>
+        <p>En hashfunktion bör ha god spridning - vi vill inte att många nycklar ska ge samma hashvärde. Med programmet
+            <span class="instructure_file_holder link_holder instructure_file_link_holder"><a
+                    class="file_preview_link previewable" title="barchart.py"
+                    href="https://canvas.kth.se/courses/37553/files/6231094/download"
+                    data-api-endpoint="https://canvas.kth.se/api/v1/courses/37553/files/6231094"
+                    data-api-returntype="File" aria-expanded="false" aria-controls="preview_1">barchart.py</a><a
+                    class="file_download_btn" role="button" download=""
+                    style="margin-inline-start: 5px; text-decoration: none;"
+                    href="https://canvas.kth.se/courses/37553/files/6231094/download?download_frd=1"><span
+                        role="presentation"><svg viewBox="0 0 1920 1920" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                            <path
+                                d="M1807.09271,1482.47718 L1886.82918,1562.43953 L1531.51624,1917.75247 L355.346824,1917.75247 L0.0338823529,1562.43953 L79.8832941,1482.47718 L402.104471,1804.81129 L1484.75859,1804.81129 L1807.09271,1482.47718 Z M997.677176,-0.0338823529 L997.677176,1166.98729 L1352.99012,811.674353 L1432.95247,891.523765 L941.093647,1383.15671 L449.460706,891.523765 L529.423059,811.674353 L884.736,1166.98729 L884.736,-0.0338823529 L997.677176,-0.0338823529 Z"
+                                stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                        </svg>
+                    </span><span class="screenreader-only">Download barchart.py</span></a>
+                <div role="region" class="preview_container" id="preview_1" style="display: none;"></div>
+            </span>&nbsp;med tillhörande datafil <span
+                class="instructure_file_holder link_holder instructure_file_link_holder"><a
+                    class="file_preview_link previewable" title="slumpnamn30.txt"
+                    href="https://canvas.kth.se/courses/37553/files/6231092/download"
+                    data-api-endpoint="https://canvas.kth.se/api/v1/courses/37553/files/6231092"
+                    data-api-returntype="File" aria-expanded="false" aria-controls="preview_2">slumpnamn30.txt</a><a
+                    class="file_download_btn" role="button" download=""
+                    style="margin-inline-start: 5px; text-decoration: none;"
+                    href="https://canvas.kth.se/courses/37553/files/6231092/download?download_frd=1"><span
+                        role="presentation"><svg viewBox="0 0 1920 1920" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                            <path
+                                d="M1807.09271,1482.47718 L1886.82918,1562.43953 L1531.51624,1917.75247 L355.346824,1917.75247 L0.0338823529,1562.43953 L79.8832941,1482.47718 L402.104471,1804.81129 L1484.75859,1804.81129 L1807.09271,1482.47718 Z M997.677176,-0.0338823529 L997.677176,1166.98729 L1352.99012,811.674353 L1432.95247,891.523765 L941.093647,1383.15671 L449.460706,891.523765 L529.423059,811.674353 L884.736,1166.98729 L884.736,-0.0338823529 L997.677176,-0.0338823529 Z"
+                                stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                        </svg>
+                    </span><span class="screenreader-only">Download slumpnamn30.txt</span></a>
+                <div role="region" class="preview_container" id="preview_2" style="display: none;"></div>
+            </span>&nbsp;kan du experimentera med fördelningen för olika hashfunktioner.</p>
+        <h3>Modulo</h3>
+        <p>I kursen använder vi modulo för att få hashfunktionens tal att passa in i vektorn.</p>
+        <p>Exempel: Datum kan hashas in i hashtabellen med <strong>20170911 % size</strong></p>
+        <h3>Krockhantering</h3>
+        <p>En idé är att lägga alla namn som hashar till ett visst index som en länkad <em>krocklista</em>. Om man har
+            femtio procents luft i sin hashtabell blir krocklistorna i regel mycket korta. Krocklistorna behandlas
+            enklast som stackar, och hashtabellen innehåller då bara topp-pekarna till stackarna.</p>
+        <h4>Linjär probning</h4>
+        <p>En annan metod är att vid krock lägga noden på <em>första lediga plats</em>. Är det tomt där, tittar man på
+            nästa, osv. Detta kallas <em>linjär probning</em>. En fördel med denna metod är att man slipper alla pekare.
+            En stor nackdel är att om det börjat klumpa ihop sej någonstans har klumpen en benägenhet att växa. Detta
+            kallas för <em>klustring</em>.</p>
+        <h4>Kvadratisk probning</h4>
+        <p>I stället för att leta lediga platser som ligger tätt ihop kan man därför göra större hopp. Hopplängden bör
+            då variera. Ett sätt är att "hoppa fram" i jämna kvadrater, så kallad <em>kvadratisk probning</em>. Om
+            hashfunktionen gav värdet <em>h</em> tittar man i ordning på platserna: h+1, h+4, h+9,h+2^4 ... . Överstiger
+            värdena hashtabellens storlek använder man resten vid heltalsdivision precis som vid beräkningen av h. Om
+            tabellstorleken är ett <em>primtal</em>. och tabellen är som mest halvfull, så riskerar man inte att fastna
+            i en evig hopprunda.</p>
+        <h4>Dubbelhashning</h4>
+        <p>Ytterligare ett sätt att lösa krockproblemet är <em>dubbelhashning</em>. I denna variant räknas nästa värde
+            fram med en annan hashfunktion som tar som indata den första hashfunktionens värde. För att hitta
+            efterföljande platser låter man den andra hashfunktionen få sitt förra värde som indata.</p>
+        <p>Både kvadratisk probning och dubbelhashning ger goda prestanda om hashtabellen har femtio procent luft. En
+            nackdel med båda metoderna är att man inte enkelt kan ta bort noder utan att förstöra hela systemet.</p>
+        <p>&nbsp;</p>
+        <h3>Klassen Hashtabell</h3>
+        <p>I en senare laboration ska du implementera den abstrakta datastrukturen hashtabell genom att skriva en klass
+            Hashtabell med operationerna <strong>put</strong> och <strong>get</strong>. Första parametern till put är
+            söknyckeln, till exempel personens namn. Andra parametern är ett objekt med alla tänkbara data om personen.
+            Metoden get har söknyckeln som indata och returnerar dataobjektet om nyckeln finns i hashtabellen, annars
+            skickar vi ett särfall.</p>
+        <pre>from hashtabell import Hashtabell, FannsInte
+table = Hashtabell(7)
+table.put("one",1)
+table.put("two",2)
+table.put("three",3)
+
+kontrollord = "xxx"
+while kontrollord != "":
+    kontrollord = input("Ett engelskt räkneord:")
+    try:
+        print(table.get(kontrollord))
+    except FannsInte:
+        print(kontrollord, "fanns inte i hashtabellen")
+	print("Försök igen!")
+</pre>
+        <p>Hashtabellen ska åtminstone ha följande operationer:</p>
+        <p><strong> put(key, data)</strong> Lägg in data med nyckeln key i hashtabellen. <br><strong>data =
+                get(key)</strong> Hämta data som hör till key. <br><strong>f = hashfunction(key)</strong> Beräkna
+            hashfunktionen för key.</p>
+        <p>Men man kan lägga till fler operationer, t ex <strong>__str__()</strong> för att skriva ut hashtabellen,
+            <strong>__contains__(key)</strong> för att se om något finns lagrat med nyckeln key, <strong>__len__()
+            </strong>för att få ut hashtabellens storlek mm.</p>
+        <h3>Användningsaspekter</h3>
+        <p>I nästan alla sammanhang där snabb sökning krävs är det hashtabeller som används. Krockar hanteras bäst med
+            länkade listor, men i vissa programspråk är det svårt att spara länkade strukturer på fil, så därför är
+            dubbelhashning fortfarande mycket använt i stora databaser.</p>
+        <p>I Ubuntu och andra UNIX-system skriver användaren namn på kommandon, program och filer och räknar med att
+            datorn snabbt ska hitta dom. Vid inloggning byggs därför en hashtabell upp med alla sådana ord. Men under
+            sessionens förlopp kan många nya ord tillkomma och dom läggs bara i en lista som söks linjärt. Så småningom
+            kan det bli ganska långsamt, och då är det värt att ge kommandot <em>rehash</em>. Då tillverkas en ny större
+            hashtabell där alla gamla och nya ord hashas in. Hur stor tabellen är för tillfället ger kommandot
+            <em>hashstat</em> besked om.</p>
+        <p>Om man vill kunna söka dels på <em>namn</em>, dels på <em>personnummer</em> kan man ha en hashtabell för
+            varje sökbegrepp, men det går också att ha en enda tabell. En viss person hashas då in med flera nycklar,
+            men själva informationsnoden finns alltid bara i ett exemplar. Många noder i hashtabellen kan ju peka ut
+            samma nod.</p>
+        <p>&nbsp;</p>
+        <h2>Hashning i Språkteknologi</h2>
+        <p>Hashning används i många olika sammanhang. Här betraktar vi ett exempel från ämnesområdet
+            <em>Språkteknologi</em>, dvs behandling av naturliga språk (mänskliga språk, till skillnad från tex
+            programmeringsspråk) med datorer.</p>
+        <h3>Stavningskontroll</h3>
+        <p>Ett stavningskontrollprogram ska läsa en text och markera alla ord som är felstavade. Om man har tillgång
+            till en ordlista som innehåller alla riktiga svenska ord kan man använda följande enkla algoritm för att
+            stavningskontrollera en text.</p>
+        <ul>
+            <li>Läs in ordlistan i en lämplig datastruktur.</li>
+            <li>Öppna textfilen.</li>
+            <li>Så länge filslut inte nåtts:</li>
+            <ul>
+                <li>Läs in nästa ord från filen.</li>
+                <li>Slå upp ordet i ordlistan och skriv ut det på skärmen om det inte finns med.</li>
+            </ul>
+        </ul>
+        <p>Enda problemet är hur man ska välja datastruktur för lagring av ordlistan. Svenska akademiens ordlista
+            innehåller ungefär 200000 ord. Förutom dessa ord finns en hel del böjningsformer och oändligt många tänkbara
+            sammansättningar. Låt oss bortse från detta och anta att vi har köpt en ordlista med dom 200000 vanligaste
+            orden i svenskan. Om vi snabbt ska kunna stavningskontrollera en stor text med en normal persondator måste
+            följande krav på datastrukturen vara uppfyllda.</p>
+        <ul>
+            <li>Uppslagning måste gå jättesnabbt.</li>
+            <li>Datastrukturen får inte ta så mycket minne (helst inte ens så mycket minne som orden i klartext).</li>
+            <li>Orden måste vara kodade (eftersom ordlistan är köpt och inte får spridas till andra).</li>
+            <li>Vi kan tillåta att uppslagningen gör fel någon gång ibland.</li>
+        </ul>
+        <p>Den sista punkten är inte ett krav utan en egenskap hos vårt problem som vi kan utnyttja. Det är nämligen
+            inte hela världen om programmet missar något enstaka felstavat ord i en jättestor text.</p>
+        <p>Vanliga datastrukturer (sorterad array, sökträd, hashtabell) faller alla på något av kraven ovan.</p>
+        <h4>Försök med datastruktur: boolesk hashtabell</h4>
+        <p>Låt oss först försöka med hashning där vi inte lagrar själva orden och inte tar hand om eventuella krockar.
+            Vi har en hashfunktion f(ord)=index som för varje ord anger en position i en boolesk hashtabell tab. Den
+            booleska variabeln tab[f(ord)] låter vi vara sann då ord ingår i ordlistan. Detta ger en snabb, minnessnål
+            och kodad datastruktur, men den har en stor brist: Om det råkar bli så att hashfunktionen antar samma värde
+            för ett ord i ordlistan som för ett felstavat ord så kommer det felstavade ordet att godkännas. Om
+            hashtabellen exempelvis är fylld till häften med ettor så är sannolikheten för att ett felstavat ord ska
+            godkännas ungefär 50% vilket är alldeles för mycket.</p>
+        <h4>Bloomfilter</h4>
+        <p>Lösningen är att använda många hashfunktioner som alla ger index i samma hashtabell tab. I Viggos
+            stavningskontrollprogram Stava används till exempel 14 olika hashfunktioner
+            f<sub>0</sub>(ord),f<sub>1</sub>(ord), f<sub>2</sub>(ord),...,f<sub>13</sub>(ord). Ett ord godkänns bara om
+            alla dessa 14 hashfunktioner samtidigt ger index till platser itab som innehåller sant.</p>
+        <p>Uppslagning av ett ord kan då ske på följande sätt:</p>
+        <pre>    for i in range(14):
+       if not tab[f(i, ord)]: return False
+    return True
+</pre>
+        <p>Om hashtabellen är till hälften fylld med ettor blir sannolikheten för att ett felstavat ord godkänns så
+            liten som (1/2)<sup>14</sup>=0.006%.</p>
+        <p>Denna datastruktur kallas <em>bloomfilter</em> efter en datalogiforskare vid namn Bloom. Ett abstrakt
+            bloomfilter har bara två operationer: insert(x) som stoppar in x i datastrukturen och isIn(x) som kollar
+            ifall x finns med i datastrukturen.</p>
+        <p>Programmet Stava kan köras på webben på <a
+                href="http://www.nada.kth.se/stava/">http://www.nada.kth.se/stava/</a> (hjälp finns via <a
+                href="http://www.csc.kth.se/stava/manual.html">webbsidan</a>)</p>
+        <hr>
+        <p>För den som tycker det här verkar intressant finns kursen <a
+                href="http://www.kth.se/student/kurser/kurs/DD2418"> DD2418, Språkteknologi</a>.</p>
+
+    </div>
+</div>

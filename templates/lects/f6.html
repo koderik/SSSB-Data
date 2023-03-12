@@ -1,0 +1,426 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 6: Kryptering, datasäkerhet</h1>
+
+
+        <ul>
+            <li>Kryptering:
+                <ul>
+                    <li>Transpositionschiffer</li>
+                    <li>Cesarchiffer</li>
+                    <li>Bokchiffer</li>
+                    <li>One-time pad</li>
+                    <li>PKI
+                        <ul>
+                            <li>Assymetrisk algoritm (RSA)</li>
+                            <li>Symmetrisk kryptering (AES)</li>
+                            <li>Hashning&nbsp; (SHA)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li style="list-style-type: none;">
+                <ul>
+                    <li>Lösenord</li>
+                    <li>Validera data</li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Kryptering</h2>
+        <p>Att <em>kryptera</em> ett meddelande innebär att vi kodar det så att det blir oläsligt för alla utom den som
+            vet hur man <em>dekrypterar</em> det. Kryptering används i alla sammanhang där man har anledning att hålla
+            något hemligt, t ex vid överföring av kontokortsnummer över internet eller när man vill skicka
+            lägesrapporter från diktaturer.</p>
+        <p>Olika former av kryptering har använts så länge man har velat ha skriftliga hemligheter. Redan dom gamla
+            grekerna hade flera system för kryptering.</p>
+        <h4>Rollista:</h4>
+        <ul>
+            <li>
+                <em>Alice</em> som vill skicka ett meddelande till Bob
+            </li>
+            <li>
+                <em>Bob</em> som vill få meddelandet från Alice (oläst)
+            </li>
+            <li>
+                <em>Eve</em> (av engelskans <em>eavesdrop</em> - tjuvlyssna) som försöker avkoda meddelandet
+            </li>
+        </ul>
+        <h3>Transpositionschiffer</h3>
+        <p>I det antika Grekland användes en <a
+                href="http://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Skytale.png/320px-Skytale.png"
+                class="external" target="_blank" rel="noreferrer noopener"><span>scytale</span><span
+                    class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                    role="presentation"><svg viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a> - en dekrypteringspinne
+            för att avkoda hemliga meddelanden skrivna på en remsa skinn. Avsändaren (Alice) och mottagaren (Bob) har
+            varsin pinne av samma diameter. Avsändaren lindar skinnremsan som en spiral runt pinnen och skriver sitt
+            meddelande längs med pinnen. Remsan blir då obegriplig tills den hamnar i mottagarens händer.</p>
+        <p>Samma effekt kan vi få genom att skriva meddelandet i en mxn-matris och bilda det kodade meddelandet genom
+            att ta varje kolumn i texten. Den som känner till matrisens storlek kan lätt avkoda det. Man brukar skippa
+            mellanslag och skiljetecken för att göra det svårare att knäcka koden.</p>
+        <pre>JAGGÖ
+MMERP
+ENGAR
+NAIDE
+NGAML
+AEKEN
+</pre>
+        <p>kodas alltså som:</p>
+        <pre>JMENNAAMNAGEGEGIAKGRADMEÖPRELN
+</pre>
+        <h3>Caesarchiffer</h3>
+        <p>Julius Caesar lär ha använt denna metod: <br>A byts mot D<br>B byts mot E<br>C byts mot F<br>osv.</p>
+        <p>En variant är <em>rot13</em> där man förskjuter varje bokstav 13 steg. Hamnar man utanför alfabetet roterar
+            man runt till början igen.</p>
+        <pre>def rot13(meddelande):
+    alfabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    kod = ""
+    for bokstav in meddelande:
+        index = (alfabet.find(bokstav) + 13) % 26
+        kod = kod + alfabet[index]
+    return kod
+</pre>
+        <p>Om vi skippar ÅÄÖ får vi ett alfabet som består av 26 tecken, vilket innebär att vi kan använda samma
+            funktion för dekryptering!</p>
+        <pre>rot13("HEMLIGHETER") blir URZYVTURGRE
+
+rot13("URZYVTURGRE") blir HEMLIGHETER
+</pre>
+        <p>Ännu hemligare blir det om vi slumpar fram en mappning istället för att flytta fram ett visst antal steg.</p>
+        <pre>ABCDEFGHIJKLMNOPQRSTUVWXY
+|||||||||||||||||||||||||
+FSXNVDQBCULRHKTPAOMWJEIGY
+</pre>
+        <p>Alla dessa chiffer är dock enkla att knäcka för Eve, som har statistik över hur ofta varje bokstav förekommer
+            i det aktuella språket. Så här ser det ut för svenska:</p>
+        <p><img title="stapel (gif)" src="https://www.kth.se/social/files/5620a9f5f27654072259814e/stapel_large.gif"
+                alt="stapel" width="283" height="240"></p>
+        <h3>Bokchiffer</h3>
+        <p>I Sir Arthur Conan Doyles <a href="http://www.gutenberg.org/cache/epub/3289/pg3289.txt" class="external"
+                target="_blank" rel="noreferrer noopener"><span>The Valley of Fear</span><span
+                    class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                    role="presentation"><svg viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a> knäcker Sherlock Holmes
+            ett <em>bokchiffer</em>.</p>
+        <p>Det är ett enkelt men mycket effektivt chiffer där man använder en bok som nyckel. Man letar rätt på ordet i
+            boken och skriver ner sidnummer samt ordets nummer på sidan, t ex</p>
+        <pre>534 13 127 220 10 109 220 129
+</pre>
+        <p>Den ena siffran anger sidan och den andra anger vilket ord på sidan det är. (Man kan använda bokstäver
+            istället för ord, men då ska det vara en tjock bok.) Alice och Bob måste i förväg ha kommit överens om
+            vilken bok det gäller utan att Eve hör).</p>
+        <h3>One-time pad</h3>
+        <p>One-time pad är en oknäckbar krypteringsmetod som använder sig av en slumpad nyckel.</p>
+        <p>Givet ett meddelande på binär form:</p>
+        <ul>
+            <li>Slumpa fram en nyckel med lika många binära siffror som meddelandet har</li>
+            <li>Gör bitvis xor mellan meddelandet och nyckeln.&nbsp;<br>
+                <table style="margin-left: auto; margin-right: auto;" cellpadding="1" border="1">
+                    <caption>&nbsp;</caption>
+                    <tbody>
+                        <tr>
+                            <td style="width: 54px;">värde 1</td>
+                            <td style="width: 54px;">värde 2</td>
+                            <td style="width: 92px;">XOR resultat</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 54px;">1</td>
+                            <td style="width: 54px;">1</td>
+                            <td style="width: 92px;">0</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 54px;">1</td>
+                            <td style="width: 54px;">0</td>
+                            <td style="width: 92px;">1</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 54px;">0</td>
+                            <td style="width: 54px;">1</td>
+                            <td style="width: 92px;">1</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 54px;">0</td>
+                            <td style="width: 54px;">0</td>
+                            <td style="width: 92px;">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>Det resulterande kodade meddelandet kan bara dekrypteras av den som har den slumpade nyckeln.</p>
+        <p>Alice och Bob måste ha varsitt exemplar av en "pad" (<a
+                href="http://users.telenet.be/d.rijmenants/pics/otpbooklet1.jpg" class="external" target="_blank"
+                rel="noreferrer noopener"><span>ett block</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>) med slumpade siffror,
+            som inte Eve har tillgång till. <br>Alice använder första sidan i sitt block för att kryptera ett meddelande
+            och river sedan av första arket och äter upp det. <br>Bob dekrypterar med sin första sida, river av och
+            eldar upp arket.</p>
+        <p>&nbsp;</p>
+        <h3>Säker nyckelöverföring</h3>
+        <p>Alice vill skicka ett exemplar av blocket till Bob utan att Eve (som jobbar som brevbärare) kan kopiera det.
+            Hur ska hon göra?</p>
+        <ul>
+            <li>Alice lägger blocket i en ibrottssäker låda och sätter sitt A-lås på det. Endast hon själv har
+                A-nyckeln.</li>
+            <li>Hon skickar lådan till Bob (Eve kan inte låsa upp den).</li>
+            <li>Bob kan inte öppna lådan ännu. Han sätter på sitt B-lås. Endast Bob har B-nyckeln.</li>
+            <li>Han skickar tillbaka lådan till Alice.</li>
+            <li>Alice låser upp A-låset och plockar bort det. Nu är lådan enbart låst med B-lås.</li>
+            <li>Hon skickar lådan till Bob, som låser upp den och får sitt block.</li>
+        </ul>
+        <h3>Asymmetrisk kryptering</h3>
+        <p>Ett problem med många chiffer är att man måste berätta för mottagaren hur hon ska dechiffrera meddelandet.
+            Hur är man säker på att den viskningen inte blir avlyssnad?</p>
+        <p>&nbsp;</p>
+        <p>Asymmetrisk kryptering (RSA) förutsätter nyckelpar. En publik och en privat nyckel hos vardera part. Man
+            krypterar med mottagerens publika nyckel och signerar med sin egen privata nyckel. Mottagaren dekrypterar
+            med sin privata nyckel och autentiserar med sändarens publika nyckel.</p>
+        <p>Bob har en publik och privat nyckel. Han lägger upp den publika på sin webbsida där alla kan se den (även
+            Eve). Alice krypterar ett meddelande med Bobs publika nyckel och skickar meddelandet till Bob. Eve kan inte
+            läsa det krypterade meddelandet, men Bob kan dekryptera med sin privata nyckel.</p>
+        <p>Vid symmetrisk kryptering har sändare och mottagare samma krypteringsnyckel. Det går i regel mycket fortare
+            än asymmetrisk kryptering. Standarden idag är AES, tidigare var det DES.</p>
+        <p>&nbsp;</p>
+        <h3>RSA</h3>
+        <p>Krypteringsalgoritmen RSA (döpt efter Ron Rivest, Adi Shamir och Leonard Adleman som först publicerade den)
+            är ett exempel på asymmetrisk kryptering. Du har en <em>offentlig nyckel</em> och en <em>privat nyckel</em>.
+            Den offentliga nyckeln delar du ut till alla, så att dom kan kryptera meddelanden och skicka till dig, men
+            det är bara du som kan dekryptera med hjälp av den privata nyckeln.</p>
+        <p>Ovannämnda algoritmer är publika och man kan matematiskt verifiera att de fungerar. Det som är hemligt är
+            nycklarna. Att hemlighålla algoritmen (security by obscurity) bör betraktas med skepsis. Under 2013 läckte
+            <a href="http://www.lawfareblog.com/catalog-of-the-snowden-revelations/" class="external" target="_blank"
+                rel="noreferrer noopener"><span> Edward Snowden hemligt material</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a> i huvudsak från
+            amerikanska NSA vilket bekräftat bilden av att algoritmerna i huvudsak håller men att det finns mängder med
+            andra säkerhetsproblem.
+        </p>
+        <h3>Hashning</h3>
+        <p>Hashning innebär kortfattat att med en algoritm skapa ett unikt s k <strong>fingeravtryck</strong> för en
+            godtycklig datamängd där detta har en förutbestämd storlek (i bitar) och (oftast) är betydligt mindre än
+            datamängden det genererades ifrån. Detta kan göras med en kryptografisk hashfunktion där en en bra sådan
+            kännetecknas av följande egenskaper:</p>
+        <ul>
+            <li>Den ska inte kunna ge samma fingeravtryck för två olika datamängder.</li>
+            <li>Det ska inte gå att återskapa datamängden från fingeravtrycket</li>
+            <li>Även en minimal ändring i datamängden bör ge ett helt ändrat fingeravtryck.</li>
+        </ul>
+        <p>Python har en inbyggd funktion hash() som tar en sträng som parameter och returnerar ett 64 bitars tal som
+            fingeravtryck. Testa med några strängar och pröva. Exempel på algoritmer här är MD-5 och SHA-1.</p>
+        <h3>PKI (Public Key Infrastructure).</h3>
+        <p>Medför att man med en kombination av symmetrisk kryptering, assymmetrisk kryptering och hashning kan lösa
+            följande säkerhetsproblem:</p>
+        <ul>
+            <li>Förhindra avlyssning av data.</li>
+            <li>Förhindra ändring av data.</li>
+            <li>Veta vem vi kommunicerar med (autentisering).</li>
+        </ul>
+        <p>När du ansluter med din webläsare (klient C) mot t ex din internetbank (server S) så sker först ett
+            nyckelutbyte:</p>
+        <ol>
+            <li>C skickar sin publika nyckel till S.</li>
+            <li>S skickar sin publika nyckel till C.</li>
+            <li>Nu kan båda kommunicera med varandra <strong>assymmetriskt</strong> och det bestäms då vilken
+                <strong>symmetrisk</strong> algoritm och nyckel som ska användas för resten av sessionen (assymmetrisk
+                kryptering är betydligt mer beräkningsintensiv än symmetrisk kryptering och vi vill därför växla).
+            </li>
+            <li>För att veta att vi (C) verkligen kommunicerar med Servern S har denna ett s k certifikat som kan liknas
+                vid ett id-kort för en server. Det är en fil som ligger på servern (filändelse .cer i windows) och som
+                innehåller bl a:
+                <ul>
+                    <li>Namn t ex <a href="http://www.nordea.se" target="_blank" class="external"
+                            rel="noreferrer noopener"><span>www.nordea.se</span><span class="external_link_icon"
+                                style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                                    viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                    style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                                    <path
+                                        d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                                        stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                                </svg>
+                                <span class="screenreader-only">Links to an external site.</span></span></a>
+                    </li>
+                    <li>Giltighet datum från -&gt; datum till</li>
+                    <li>Serverns publika nyckel</li>
+                    <li>En utgivares signatur (dessa kallas CA, certificate authority).</li>
+                </ul>
+            </li>
+            <li>Autentisering sker även av klienten men då med t ex BankID.</li>
+        </ol>
+        <h3>Signering och validering(*)</h3>
+        <p>Utgivaren (som säljer certifikat) har skapat signaturen genom att ta innehållet (datamängden) i certifikatet
+            och genererat ett fingeravtryck (med en hashfunktion som framgår av certifikatet). Detta värde har sedan
+            <strong>krypterats</strong> av och med CA:s <strong>privata</strong> nyckel för att sedan adderas till
+            certifikatet, detta är certifikatets signatur. Denna signatur kan valideras vid anslutning mot S genom att C
+            (vår webläsare) hämtar CA:s <strong>publika</strong> nyckel (tillgänglig för alla) och
+            <strong>dekrypterar</strong> signaturen. Om denna kod är identisk med fingeravtrycket (se första raden i
+            detta stycke) så vet vi att signaturen är äkta för endast CA kan ha skapat den med sin privata nyckel.
+            Notera:
+        </p>
+        <ol>
+            <li>CA exponerar aldrig sin privata nyckel genom att ha krypterat med den.</li>
+            <li>Det går att kryptera med den privata och sedan dekryptera med den publika.</li>
+        </ol>
+        <p>&nbsp;</p>
+        <h3>Lösenord</h3>
+        <p>Lösenord bör sparas saltade och hashade.</p>
+        <p>Exempelvis skulle en lösenordsfunktion:</p>
+        <pre>def testaHemligtPassword( password ):
+   if password == "123aabbccdd" :
+       return True
+   else: 
+       return False
+</pre>
+        <p>kunna skrivas så här:</p>
+        <pre>def dunkeltPasswordsTest(password):
+   hårdkodat_salt = "123£"!#¤!..."
+   hårdkodat_saltat_och_hashat_lösen = "312sd3$£$#!SESD..."
+
+   hashat_password = hashfunc( password + hårdkodat_salt)
+   if hashat_password == hårdkodat_saltat_och_hashat_lösen :
+      return True
+   else:
+      return False
+</pre>
+        <p>Givet koden är det svårt att gissa lösenordet. Eftersom en hashfunktion kan ge samma värde för två helt olika
+            indata (krock) så går det inte att, givet hashvärdet, lista ut vilket det ursprungliga värdet var.</p>
+        <p><a href="http://xkcd.com/936/" class="external" target="_blank" rel="noreferrer noopener"><span>Det finns bra
+                    och dåliga lösenord</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>. I mars 2013 anordnade
+            nättidningen Ars Technica en tävling att gissa hashade lösenord. <a
+                href="http://arstechnica.com/security/2013/05/how-crackers-make-minced-meat-out-of-your-passwords/"
+                class="external" target="_blank" rel="noreferrer noopener"><span>Artikeln beskriver hur
+                    lösenordsgissningsalgoritmerna jobbar</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>. Bl.a. används
+            befintliga lösenord som algoritmen hakar på suffix och prefix. Bruce Schneier är en säkerhetsexpert som
+            bloggar om datasäkerhet och ger <a
+                href="https://www.schneier.com/blog/archives/2009/08/password_advice.html" class="external"
+                target="_blank" rel="noreferrer noopener"><span>en del råd om lösenord</span><span
+                    class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                    role="presentation"><svg viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>.</p>
+        <h3>Validera indata</h3>
+        <p>Ett användarvänligt program berättar för användaren om indata är på fel format så att hen har chans att rätta
+            till det. Men det finns ytterligare skäl till att validera inmatning innan den skickas vidare till
+            programmet - det är en möjlig säkerhetsrisk.</p>
+        <p>Kontrollera t ex:</p>
+        <ul>
+            <li>Indatas längd</li>
+            <li>Datatyp</li>
+            <li>Filformat (inte bara ändelsen)</li>
+        </ul>
+        <h3>Dekompilera kod</h3>
+        <p>Under 2014 publicerades två artiklar (<a href="http://eprint.iacr.org/2013/451.pdf" class="external"
+                target="_blank" rel="noreferrer noopener"><span>1</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>, <a
+                href="http://eprint.iacr.org/2013/454.pdf" class="external" target="_blank"
+                rel="noreferrer noopener"><span>2</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>) som kunde visa att det
+            går att skriva kod <a href="http://www.wired.com/wiredscience/2014/02/cryptography-breakthrough/"
+                class="external" target="_blank" rel="noreferrer noopener"><span>som inte går att hacka</span><span
+                    class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                    role="presentation"><svg viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a>. Definitionen på ej
+            hackningsbar skulle vara att den som har tillgång till källkoden inte vet mer än den som har den kompilerade
+            koden. För den senare fungerar koden som en svart låda (black box).</p>
+        <h2>Mer att läsa</h2>
+        <p>I <a href="http://simonsingh.net/cryptography/cipher-challenge/" class="external" target="_blank"
+                rel="noreferrer noopener"><span>Simon Singhs kodbok</span><span class="external_link_icon"
+                    style="margin-inline-start: 5px; display: inline-block; " role="presentation"><svg
+                        viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a> finns tio
+            chiffreringsuppgifter av stigande svårighetsgrad. De första att knäcka alla tio var ett lag med
+            dåvarande/blivande doktorander i teorigruppen TCS på CSC, Här är <a href="http://codebook.org/"
+                class="external" target="_blank" rel="noreferrer noopener"><span>deras berättelse</span><span
+                    class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; "
+                    role="presentation"><svg viewBox="0 0 1920 1920" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        style="width:1em; height:1em; vertical-align:middle; fill:currentColor">
+                        <path
+                            d="M1226.66667,267 C1314.88,267 1386.66667,338.786667 1386.66667,427 L1386.66667,427 L1386.66667,853.666667 L1280,853.666667 L1280,693.666667 L106.666667,693.666667 L106.666667,1493.66667 C106.666667,1523 130.56,1547 160,1547 L160,1547 L1226.66667,1547 C1256.10667,1547 1280,1523 1280,1493.66667 L1280,1493.66667 L1280,1280.33333 L1386.66667,1280.33333 L1386.66667,1493.66667 C1386.66667,1581.88 1314.88,1653.66667 1226.66667,1653.66667 L1226.66667,1653.66667 L160,1653.66667 C71.7866667,1653.66667 0,1581.88 0,1493.66667 L0,1493.66667 L0,427 C0,338.786667 71.7866667,267 160,267 L160,267 Z M1584.37333,709.293333 L1904.37333,1029.29333 C1925.17333,1050.09333 1925.17333,1083.90667 1904.37333,1104.70667 L1904.37333,1104.70667 L1584.37333,1424.70667 L1508.96,1349.29333 L1737.86667,1120.38667 L906.613333,1120.38667 L906.613333,1013.72 L1737.86667,1013.72 L1508.96,784.706667 L1584.37333,709.293333 Z M1226.66667,373.666667 L160,373.666667 C130.56,373.666667 106.666667,397.666667 106.666667,427 L106.666667,427 L106.666667,587 L1280,587 L1280,427 C1280,397.666667 1256.10667,373.666667 1226.66667,373.666667 L1226.66667,373.666667 Z"
+                            stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+                    </svg>
+                    <span class="screenreader-only">Links to an external site.</span></span></a> om hur det gick till.
+        </p>
+        <p>En fortsättningskurs som bland annat handlar om tillämpningar av kryptering är <a
+                href="https://www.kth.se/social/course/DD2395/">DD2395 Datasäkerhet</a>. Där får man också lära sig om t
+            ex virus och datajuridik.</p>
+        <p>Säkerhetsaspekter tas även upp i kursen <a href="https://www.kth.se/social/course/DD1334/">DD1334
+                Databasteknik</a> som vissa av er läser redan i vår.</p>
+        <p>Vi har förstås också kursen <a href="https://www.kth.se/social/course/DD2448/">DD2448 Kryptografins
+                grunder</a> (men den kräver att man läst <a href="https://www.kth.se/social/course/DD1352">DD1352
+                ADK</a> först).</p>
+
+    </div>
+</div>

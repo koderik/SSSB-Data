@@ -1,0 +1,362 @@
+<div id="wiki_page_show">
+
+    <div class="show-content user_content clearfix enhanced">
+        <h1 class="page-title">Föreläsning 12: Automater, textsökning</h1>
+
+
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td style="width: 148px;"><strong>Mål</strong></td>
+                    <td style="width: 245px;"><strong>Läs i kursboken<br></strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 148px;">
+                        <p>Automater</p>
+                        <p>Textsökning</p>
+                    </td>
+                    <td style="width: 245px;">
+                        <p>Aziz, Cackler, Young:<span>&nbsp;</span><a class="external"
+                                href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/2004-05/automata-theory/basics.html"
+                                target="_blank"><span>Basics of Automata Theory</span><span
+                                    class="screenreader-only">&nbsp;(Links to an external site.)</span></a></p>
+                        <p>Georgy Gimel’farb:<span>&nbsp;</span><a class="external"
+                                href="https://www.cs.auckland.ac.nz/courses/compsci369s1c/lectures/GG-notes/CS369-StringAlgs.pdf"
+                                target="_blank"><span>String Matching Algorithms</span></a></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Idag</p>
+        <ul>
+            <li>Automater</li>
+            <li>Textsökning</li>
+            <li>KMP-automat</li>
+            <li>Boyer-Moore</li>
+            <li>Rabin-Karp</li>
+            <li>Sökning på webben</li>
+            <li>Reguljära uttryck</li>
+        </ul>
+        <h3>Automater</h3>
+        <p>En portkodsautomat med nio knappar kan se ut så här:</p>
+        <table>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <pre>A</pre>
+                    </td>
+                    <td>
+                        <pre>B</pre>
+                    </td>
+                    <td>
+                        <pre>C</pre>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <pre>D</pre>
+                    </td>
+                    <td>
+                        <pre>E</pre>
+                    </td>
+                    <td>
+                        <pre>F</pre>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <pre>G</pre>
+                    </td>
+                    <td>
+                        <pre>H</pre>
+                    </td>
+                    <td>
+                        <pre>I</pre>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Anta att den rätta knappföljden är <strong>DEG</strong>. Då har automaten fyra olika <em>tillstånd</em>:</p>
+        <ol>
+            <li>Starttillstånd.</li>
+            <li>Knapptryckning <strong>D</strong> har just gjorts.</li>
+            <li>Knapptryckningarna <strong>DE</strong> har just gjorts.</li>
+            <li>Knapptryckningarna <strong>DEG</strong> har just gjorts. Låset öppnas.</li>
+        </ol>
+        <p>När automaten är i ett visst tillstånd och en viss knapp trycks ner övergår den i ett nytt tillstånd, och det
+            kan beskrivas med en <em>övergångsmatris</em>:</p>
+        <pre><strong>   A B C D E F G H I</strong> <br> <strong>1</strong> 1 1 1 2 1 1 1 1 1   Exempel: Om automaten är i tillstånd <strong>3</strong><br> <strong>2</strong> 1 1 1 2 3 1 1 1 1   och knapp <strong>D</strong> trycks ner övergår den till<br> <strong>3</strong> 1 1 1 2 1 1 4 1 1   tillstånd <strong>2</strong></pre>
+        <p>Man kan också rita en graf med fyra noder (som representerar tillstånden) och en massa bokstavsmärkta pilar
+            (som visar vilka övergångar som finns).</p>
+        <p><img style="max-width: 723px;" src="https://canvas.kth.se/courses/26987/files/4354099/preview"
+                alt="DEG-automat med bokstavsmärkta pilar"
+                data-api-endpoint="https://canvas.kth.se/api/v1/courses/26987/files/4354099" data-api-returntype="File"
+                width="723" height="236"></p>
+        <p>&nbsp;</p>
+        <p>Här är några fler exempel på vad automater kan användas till:</p>
+        <ul>
+            <li>Söka efter ett ord i en text (se <em>KMP-automat</em> nedan).</li>
+            <li>Tolka <em>reguljära uttryck</em>.</li>
+            <li>Beskriva grafiska gränssnitt.</li>
+            <li>Kompilatorns/interpretatorns analys av ditt program (se föreläsning om <em>syntax</em>).</li>
+            <li>Komprimering.</li>
+            <li><a class="external" href="https://sv.wikipedia.org/wiki/Morfologi_(lingvistik)"
+                    target="_blank"><span>Morfologisk</span><span class="screenreader-only">&nbsp;(Länkar till en
+                        externa sida.)</span></a> analys av ord (t ex <em>o-ut-trött-lig-a</em>).</li>
+        </ul>
+        <h3>Modellering av grafiska gränssnitt</h3>
+        <p>Grafiska gränssnitt kan modelleras med automater. Vad som ska synas på skärmen, och hur programmet ska
+            reagera på t ex knapptryckningar avgörs då av vilket tillstånd automaten befinner sig i.</p>
+        <p>Exempel: <br>I många grafiska gränssnitt kan man markera text genom att trycka ner musknappen och hålla den
+            nedtryckt medan man drar musen över texten. Det här kan vi se som en automat med ett normaltillstånd och ett
+            markeringstillstånd, där musknappstryck/släpp ger övergång mellan tillstånden.</p>
+        <p>I programmet skriver vi då if-satser som kontrollerar vilket tillstånd automaten är i, t ex</p>
+        <pre>if state == HIGHLIGHT:<br>   invertText()</pre>
+        <p>&nbsp;</p>
+        <p style="padding-left: 40px; text-align: right;"><span style="font-size: 8pt;">Textavsnitt ur <a
+                    class="external" href="http://gutenberg.org/files/20727/20727-h/20727-h.htm"
+                    target="_blank"><span>THE COSMIC COMPUTER</span><span class="screenreader-only">&nbsp;(Länkar till
+                        en externa sida.)</span></a> av H. BEAM PIPER</span></p>
+        <p><img style="max-width: 400px;" src="https://canvas.kth.se/courses/26987/files/4354140/preview"
+                alt="CtrlF.jpg" data-api-endpoint="https://canvas.kth.se/api/v1/courses/26987/files/4354140"
+                data-api-returntype="File" width="400" height="459" align="right"></p>
+        <h3>Textsökning&nbsp;</h3>
+        <p>Med textsökning menar vi att söka efter en sträng <strong><em>s</em></strong> i en text. Anta att strängen
+            har längd <strong><em>m</em></strong>.</p>
+        <p>En naiv metod skulle vara att gå igenom texten en bokstav framåt i taget och jämföra varje delsträng av längd
+            <em>m</em> med strängen <em>s</em>.
+        </p>
+        <p>Om vi söker efter <em>s = "was"</em> i texten till höger skulle vi då få</p>
+        <pre>"Thi" == "was"<br><br>"hir" == "was"<br><br>"irt" == was"<br><br>"rty" == "was"</pre>
+        <p>osv. vilket ger oss tre tecken-jämförelser i varje steg. I det allmänna fallet får vi <em>O(m*n)</em> där</p>
+        <ul>
+            <li><em>m</em> är längden av söksträngen</li>
+            <li><em>n</em> är längden av texten</li>
+        </ul>
+        <pre></pre>
+        <p>Finns det effektivare sätt att söka efter en sträng i en text?</p>
+        <p>&nbsp;</p>
+        <h3>KMP</h3>
+        <p>Samma automat som vi tittade på ovan kan användas för <em>textsökning</em>, till exempel för att söka efter
+            ordet <strong>DEG</strong>. Bokstav efter bokstav läses och automaten övergår i olika tillstånd. När fjärde
+            tillståndet uppnås har man funnit ordet DEG. Datalogins fader, Donald Knuth, uppfann tillsammans med Vaughan
+            Pratt en enkel metod att konstruera och beskriva automaten. James H. Morris kom på samma sak oberoende av
+            dom två! Därför kallar vi automaten <a class="external"
+                href="http://www.cs.utexas.edu/users/moore/best-ideas/string-searching/kpm-example.html"
+                target="_blank"><span>KMP-automat</span><span class="screenreader-only">&nbsp;(Länkar till en externa
+                    sida.)</span></a>. En KMP-automat har bara en framåtpil och en bakåtpil från varje tillstånd. Så här
+            blir den:</p>
+        <p><img style="max-width: 221px;" src="https://canvas.kth.se/courses/26987/files/4354117/preview"
+                alt="DEG KMPautomat-1.jpg" data-api-endpoint="https://canvas.kth.se/api/v1/courses/26987/files/4354117"
+                data-api-returntype="File" width="221" height="66"></p>
+        <p>Ett nolltillstånd har skjutits in längst till vänster. Automaten startar emellertid i tillstånd 1, som har
+            ett D i noden. Den tjuvtittar på första bokstaven i texten, och om det är ett D läser den D-et och går till
+            höger. Annars följer den bakåtpilen utan att glufsa bokstaven. I nolltillståndet<em> glufsar den alltid en
+                bokstav</em> och går till höger.</p>
+        <p>Koden blir i princip så här, om vi först antar att bokstäverna lästs in i en kö, som har en extra metod
+            <em>peek()</em>, med vilken man kan tjuvtitta på första bokstaven. Det är variabeln
+            <em><strong>i</strong></em> som håller reda på vilket tillstånd vi befinner oss i.
+        </p>
+        <pre>i = 1 # starttillståndet
+while i &lt; 4:
+  if i == 0 or q.peek() == sokord[i]: 
+     i = i+1
+     q.dequeue()
+  else: 
+     i = next[i];
+</pre>
+        <p>Här är sokord[i] den i-te bokstaven i det sökta ordet och next[i] det tillstånd man backar till från
+            tillstånd i. Nextvektorn (bakåtpilarna) i vårt exempel blir</p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td><strong> i </strong></td>
+                    <td><strong>next[i]</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Om vi i stället söker efter ADAM blir KMP-automaten så här: <br><img style="max-width: 318px;"
+                src="https://canvas.kth.se/courses/26987/files/4354131/preview" alt="ADAM KMPautomat-1.jpg"
+                data-api-endpoint="https://canvas.kth.se/api/v1/courses/26987/files/4354131" data-api-returntype="File"
+                width="318" height="71"><br>Nextvektorn för ADAM blir alltså den här:</p>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td><strong> i </strong></td>
+                    <td><strong>next[i]</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Varför det? För DEG gick bakåtpilen från tillstånd 3 till tillstånd 1, men här vore meningslöst att två
+            gånger i rad kolla om bokstaven är A. Bakåtpilen från tillstånd 4 till tillstånd 2 kräver också en
+            förklaring. Om vi har sett ADA och nästa bokstav inte är ett M kan vi i alla fall hoppas att det A vi just
+            sett ska vara början på ADAM. Därför backar vi till tillstånd 2 och undersöker om det möjligen kommer ett D.
+            Reglerna för hur next-vektorn bildas kan sammanfattas så här:</p>
+        <ul>
+            <li>next[1]=0.</li>
+            <li>Annars är next[i]=1 om<span>&nbsp;sökordet inte innehåller upprepningar.</span></li>
+            <li>...men om de j senaste bokstäverna vi sett bildar början på sökordet sätts next[i]=j+1.</li>
+            <li>...men om bokstav j+1 är samma som bokstav i sätts i stället next[i]=next[j+1].</li>
+        </ul>
+        <p>Kom ihåg att next-vektorn bara behövs när det kommer ett dåligt tecken.</p>
+        <p><br>Om den sträng vi söker efter är m tecken lång och texten vi söker i är n tecken lång kräver KMP-sökning
+            aldrig mer än <em>n+m</em> teckenjämförelser och är alltså O(n+m). Metoden går igenom texten tecken för
+            tecken - man kan alltså läsa ett tecken i taget t ex från en fil vilket är praktiskt om texten är stor.</p>
+        <h3>Boyer-Moore</h3>
+        <p>Då hela texten vi söker i finns i en lista kan man istället använda Boyer-Moores metod. Den börjar med att
+            försöka matcha sista tecknet i söksträngen, som är <em>m</em> tecken lång. Om motsvarande tecken i texten
+            inte alls förekommer i söksträngen hoppar den fram m steg, annars flyttar den fram så att tecknet i texten
+            passar ihop med sista förekomsten i söksträngen. <br>Exempel: Vi söker efter <strong>TILDA</strong> i texten
+            <strong>MEN MILDA MATILDA</strong>.
+        </p>
+        <pre>MEN MILDA MATILDA  
+TILDA
+     TILDA
+          TILDA
+            TILDA
+MEN MILDA MATILDA
+</pre>
+        <p>Boyer-Moore är <em>O(n+m)</em> i värsta fallet, men ca <em>n/m</em> steg om texten vi söker i består av många
+            fler tecken än dom som ingår i söksträngen, så att vi oftast kan hoppa fram <em>m</em> steg.</p>
+        <p>När du skriver Ctrl-F för att söka efter en sträng i webbläsaren är det troligen Boyer-Moore som används (se
+            t ex <a class="external"
+                href="https://source.chromium.org/chromium/chromium/src/+/master:v8/src/strings/string-search.h?q=boyerMoore"
+                target="_blank"><span>Chromium</span><span class="screenreader-only">&nbsp;(Länkar till en externa
+                    sida.)</span></a>)</p>
+        <p>J Strother Moores egen html-visualisering<a class="external"
+                href="http://www.cs.utexas.edu/users/moore/best-ideas/string-searching/index.html"
+                target="_blank"><span>&nbsp;av Boyer-Moore</span><span class="screenreader-only">&nbsp;(Länkar till en
+                    externa sida.)</span></a>.</p>
+        <p>&nbsp;</p>
+        <h3>Rabin-Karp</h3>
+        <p>Beräknar en hashfunktion för söksträngen och jämför med hashfunktionen beräknad för alla avsnitt av längden
+            <em>m</em> i texten. Låt oss söka efter "TILDA" i texten "MEN MILDA MATILDA". Med Pythons hashfunktion
+            hash() % 17 får vi hash(TILDA)=16
+        </p>
+        <pre>hash(MEN M) = 6
+ hash(EN MI) = 15
+  hash(N MIL) = 9
+   hash( MILD) = 1
+    hash(MILDA) = 7
+     hash(ILDA ) = 13
+      hash(LDA M) = 15
+       hash(DA MA) = 12
+        hash(A MAT) = 0
+         hash( MATI) = 5
+          hash(MATIL) = 12
+           hash(ATILD) = 3
+            hash(TILDA) = 16
+</pre>
+        <p>För att snabba upp beräkningarna använder man hela tiden förra hashvärdet. Komplexiteten blir
+            <br><em>O(nm)</em> i värsta fallet, men i praktiken bara <em>O(n+m)</em>.
+        </p>
+        <h3>Sökning på webben</h3>
+        <p>När man använder en <em>sökmotor</em>, t ex Google, för att hitta webbsidor som innehåller ett visst ord
+            skulle alla ovanstående metoder bli för tidsödande. Där slår man istället upp ordet i ett index som skapats
+            i förväg. Hur det fungerar kan du läsa mer om i kursen <a class="external"
+                href="https://www.kth.se/social/course/DD2418" target="_blank"><span>DD2418, Språkteknologi</span><span
+                    class="ui-icon ui-icon-extlink ui-icon-inline" title="Länkar till en externa sida."><span
+                        class="screenreader-only">Länkar till en externa sida.</span></span></a>.</p>
+        <h3>Reguljära uttryck</h3>
+        <p>De sökmetoder vi beskrivit ovan kräver att vi vet exakt vilken sträng vi söker efter. Men om man är osäker på
+            stavningen eller t ex skulle vilja söka efter lab1, Lab2, eller labb3 så kan man istället använda ett
+            <em>reguljärt uttryck</em> för att beskriva söksträngen. Ett reguljärt uttryck består av tecken och
+            metatecken som tillsammans utgör ett sökmönster. Metatecken (t ex * och +) har särskild innebörd. Här följer
+            några regler:
+        </p>
+        <ul>
+            <li><strong>a*</strong> matchar noll eller flera a:n</li>
+            <li><strong>a+</strong> matchar ett eller flera a:n</li>
+            <li><strong>a?</strong> matchar ett eller inget a</li>
+            <li><strong>.</strong> matchar alla tecken utom radslut</li>
+            <li><strong>[a-zA-Z]</strong> matchar alla engelska bokstäver</li>
+            <li><strong>[abc]</strong> matchar a, b eller c</li>
+            <li><strong>[^abc]</strong> matchar vilket tecken som helst utom a, b eller c</li>
+            <li><strong>X|Y</strong> matchar uttrycket X eller uttrycket Y</li>
+            <li><strong>\.</strong> matchar en punkt. Tecknet "\" används för att rädda det efterföljande tecknet från
+                att tolkas som ett metatecken.</li>
+            <li><strong>(ab)</strong> skapar en grupp. T ex matchar (ab)+ ett eller flera ab:n</li>
+        </ul>
+        <p>Det reguljära uttrycket <em>[Ll]abb?[1-7]</em> kan användas för att hitta alla labbvarianter vi eftersökte
+            ovan.</p>
+        <p>Det finns UNIX-kommandon som använder reguljära uttryck: <em>egrep</em> som letar efter ett reguljärt uttryck
+            i en textfil, <em>sed</em> som kan byta ut valda delar av en fil (där delarna väljs ut med hjälp att ett
+            reguljärt uttryck) <em>awk</em> som är ett programmeringsspråk som bygger på att vissa instruktioner ska
+            utföras vid varje matchning av ett uttryck.</p>
+        <p>Pythonmodulen r<em>e</em> har funktionalitet för reguljära uttryck. Exempel:</p>
+        <pre>   import re
+   pattern="[Ll]abb?[1-7]"
+   sometext="Lab5, labb 6, labb7 och lab8"
+   print(re.findall(pattern,sometext))
+   # Utskriften blir ['Lab5', 'labb7']
+</pre>
+        <p>Bakom kulisserna i re-modulen skapas automater som kan kontrollera om indata matchar det givna uttrycket.</p>
+        <p>Testa dina reguljära uttryck på <a class="external" href="https://regex101.com/"
+                target="_blank"><span>regex101.com</span><span class="screenreader-only">&nbsp;(Länkar till en externa
+                    sida.)</span></a></p>
+        <hr>
+        <p>Du som vill veta hur automater egentligen fungerar kan läsa Dilians kurs <a class="external"
+                href="https://www.kth.se/social/course/DD2372/" target="_blank"><span>DD1372, Automata and
+                    languages</span><span class="ui-icon ui-icon-extlink ui-icon-inline"
+                    title="Länkar till en externa sida."><span class="screenreader-only">Länkar till en externa
+                        sida.</span></span></a> (men den kräver en del andra förkunskaper).</p>
+        <p>För dig som är särskilt intresserad av grafiska gränssnitt finns kursen <a class="external"
+                href="https://www.kth.se/social/course/DH2323" target="_blank"><span>DH2323, Datorgrafik med
+                    interaktion</span><span class="ui-icon ui-icon-extlink ui-icon-inline"
+                    title="Länkar till en externa sida."><span class="screenreader-only">Länkar till en externa
+                        sida.</span></span></a></p>
+
+    </div>
+</div>
