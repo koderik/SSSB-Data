@@ -4,6 +4,7 @@ import json
 import psycopg2
 import os
 import pdf_scrape
+import appartment_analytics
 
 app = Flask(__name__)
 
@@ -21,7 +22,16 @@ def munta():
     # return main.html inside lects dir
     return render_template("lects/main.html")
 
-
+@app.route("/analytics")
+def analytics():
+    DATABASE_URL = os.environ["DATABASE_URL"]
+    conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM sssbdata_closed")
+    rows = cur.fetchall()
+    cur.close()
+    data = appartment_analytics.analyze(rows)
+    return render_template("analytics.html", rows=json.dumps(data))
 
 # Add second route for /old to show old data
 @app.route("/old")
@@ -79,4 +89,5 @@ def merit():
 
 if __name__ == '__main__':
     # run debug mode
+    #app.run(debug=True)
     app.run()
