@@ -17,11 +17,7 @@ csp = {
 }
 talisman = Talisman(app, force_https=True, content_security_policy=csp)
 
-@app.route("/munta")
-def munta():
-    # return main.html inside lects dir
-    return render_template("lects/main.html")
-
+<<<<<<< HEAD
 @app.route("/analytics")
 def analytics():
     DATABASE_URL = os.environ["DATABASE_URL"]
@@ -32,6 +28,8 @@ def analytics():
     cur.close()
     data = appartment_analytics.analyze(rows)
     return render_template("analytics.html", rows=json.dumps(data))
+=======
+>>>>>>> parent of f473f24 (feat: :sparkles: added hidden content)
 
 # Add second route for /old to show old data
 @app.route("/old")
