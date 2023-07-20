@@ -3,7 +3,7 @@ This personal website contains a tool that scrapes the maximum queue days data f
 
 ## Features
 A webpage built with Flask and HTML that displays the queue days information using some JavaScript.
-A tool made with Tableau that allows you to upload PDFs and calculate your grade point average.
+A tool made with Tabula that allows you to upload PDFs and calculate your grade point average.
 ## Getting Started
 To run the website locally, you'll need to have the following software installed on your computer:
 
