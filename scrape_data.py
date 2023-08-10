@@ -14,9 +14,8 @@ def scrape():
     # options.add_argument("window-size=1920x1480")
     options.add_argument("--headless")
     options.add_argument("disable-dev-shm-usage")
-
-    driver = webdriver.Chrome(
-        executable_path=ChromeDriverManager().install(), options=options)
+    chrome_driver_version = "100.0.4896.20"  # Replace with a working version
+    driver = webdriver.Chrome(executable_path=ChromeDriverManager(version=chrome_driver_version).install(), options=options)
 
     driver.get(url)
     time.sleep(30)  # experiment with timer to fetch all the data
