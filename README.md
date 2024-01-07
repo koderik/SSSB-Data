@@ -35,7 +35,7 @@ The website will be available at http://localhost:5000.
 * You'll need to set up the PostgreSQL database and configure the database settings in the code.
 * You might need to set ```force_https=False``` in ```app.py``` to run locally
 ## Visit the Website
-The website is available online at https://SSSB.tech.
+The website is available online at [https://sssb.sandlov.com](https://sssb.sandlov.com/).
 
 ## Conclusion
 With this tool, you can easily scrape the maximum queue days data for all apartments on the SSSB.se website and display it in a user-friendly format. The tool also provides a way to calculate your grade point average, making it a versatile tool for personal use.
